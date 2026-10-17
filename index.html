@@ -30,7 +30,10 @@
             padding: 16px;
             max-width: 800px;
             margin: 0 auto;
+            user-select: none;
             overflow-x: hidden;
+            touch-action: pan-y;
+            overscroll-behavior-x: none;
         }
         
         /* Pływające przyciski na bokach */
@@ -129,6 +132,7 @@
             font-size: 1rem;
             outline: none;
             text-align: center;
+            user-select: text;
         }
         input[type="password"]:focus { border-color: var(--accent); }
         .error-msg {
@@ -137,7 +141,6 @@
             display: none;
         }
         
-        /* Blokujemy gesty i zaznaczanie TYLKO wewnątrz aplikacji, chroniąc ekran logowania */
         #app-screen { 
             display: none; 
             user-select: none;
@@ -466,7 +469,19 @@
         let dostepneMiesiace = [];
         let aktualnyIndeksMiesiaca = 0;
         let timerInterval = null;
-        let isAnimating = false; // Blokada wielu kliknięć na raz
+        let isAnimating = false;
+
+        // ==========================================
+        // SŁOWNIK WYKŁADOWCÓW (RĘCZNE PRZYPISANIE)
+        // Jeśli USOS nie podaje nazwiska w pliku ICS, 
+        // aplikacja weźmie je stąd po nazwie przedmiotu.
+        // ==========================================
+        const PRZYPISANI_WYKLADOWCY = {
+            "Bazy danych I": "dr inż. Jan Kowalski",
+            "Technologie sieciowe": "mgr inż. Anna Nowak",
+            "Technika i architektura systemów cyfrowych": "prof. dr hab. Janusz Tracz",
+            // "Nazwa przedmiotu": "Tytuł i Nazwisko",
+        };
 
         function sprawdzHaslo(wpisane) {
             return wpisane && wpisane.trim().toLowerCase() === "lol123";
@@ -540,9 +555,20 @@
             return { tekst: `📍 Sala ${sala}`, zdalnie: false };
         }
 
-        function wyciagnijProwadzacego(rawDescription) {
+        // ZMODYFIKOWANA FUNKCJA - Szuka w pliku ICS LUB bierze ze słownika
+        function wyciagnijProwadzacego(rawDescription, nazwaPrzedmiotu) {
+            // 1. Sprawdzamy nasz własny słownik na samej górze kodu
+            if (nazwaPrzedmiotu) {
+                for (const [przedmiot, wykladowca] of Object.entries(PRZYPISANI_WYKLADOWCY)) {
+                    if (nazwaPrzedmiotu.toLowerCase().includes(przedmiot.toLowerCase())) {
+                        return wykladowca;
+                    }
+                }
+            }
+
+            // 2. Jeśli nie ma w słowniku, szukamy w pliku ICS (rozszerzony Regex)
             if (!rawDescription) return "";
-            const match = rawDescription.match(/Prowadzący:\s*([^|\n\r]+)/i);
+            const match = rawDescription.match(/(?:Prowadzący|Nauczyciel|Wykładowca):\s*([^|\n\r]+)/i);
             return match ? match[1].trim() : "";
         }
 
@@ -562,7 +588,8 @@
                         const salaInfo = wyciagnijSale(obecne.description, obecne.location);
                         obecne.salaTekst = salaInfo.tekst;
                         obecne.czyZdalnie = salaInfo.zdalnie;
-                        obecne.prowadzacy = wyciagnijProwadzacego(obecne.description);
+                        // Przekazujemy nazwę przedmiotu, by słownik mógł zadziałać
+                        obecne.prowadzacy = wyciagnijProwadzacego(obecne.description, obecne.czystaNazwa);
                         zajecia.push(obecne);
                     }
                     obecne = null;
@@ -817,7 +844,6 @@
         let startX = 0, startY = 0, endX = 0, endY = 0;
         let isMouseDown = false;
 
-        // Blokada działania na ekranie logowania
         function czyAplikacjaAktywna() {
             return document.getElementById("app-screen").style.display === "block";
         }
@@ -833,7 +859,7 @@
         }
 
         document.addEventListener('touchstart', e => {
-            if (!czyAplikacjaAktywna()) return; // Gesty nieaktywne podczas logowania!
+            if (!czyAplikacjaAktywna()) return;
             startX = e.changedTouches[0].clientX;
             startY = e.changedTouches[0].clientY;
         }, { passive: true });
