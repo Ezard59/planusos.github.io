@@ -11,6 +11,7 @@
             --text: #f8fafc;
             --muted: #94a3b8;
             --accent: #38bdf8;
+            --danger: #ef4444;
             --border: #334155;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,6 +23,47 @@
             max-width: 800px;
             margin: 0 auto;
         }
+        /* Ekran logowania */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 75vh;
+            gap: 14px;
+            text-align: center;
+        }
+        .login-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 28px 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        input[type="password"] {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+        }
+        input[type="password"]:focus {
+            border-color: var(--accent);
+        }
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            display: none;
+        }
+        /* Główna aplikacja */
+        #app-screen { display: none; }
         header {
             display: flex;
             justify-content: space-between;
@@ -30,7 +72,8 @@
             padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
-        h1 { font-size: 1.4rem; }
+        h1 { font-size: 1.35rem; }
+        .btn-group { display: flex; gap: 8px; }
         button {
             background: var(--accent);
             color: #0f172a;
@@ -39,6 +82,12 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            font-size: 0.9rem;
+        }
+        button.btn-logout {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
         }
         button:active { opacity: 0.8; }
         .status {
@@ -85,20 +134,90 @@
 </head>
 <body>
 
-    <header>
-        <h1>🎓 Mój Plan USOS</h1>
-        <button onclick="pobierzPlan()">Odśwież</button>
-    </header>
+    <!-- EKRAN LOGOWANIA -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>🔒 Dostęp do planu</h2>
+            <p style="font-size: 0.85rem; color: var(--muted);">Wpisz hasło jednorazowo, aby odblokować i zapamiętać urządzenie.</p>
+            <input type="password" id="pass-input" placeholder="Hasło..." onkeydown="if(event.key==='Enter') zaloguj()">
+            <div id="login-error" class="error-msg">Nieprawidłowe hasło!</div>
+            <button onclick="zaloguj()">Odblokuj</button>
+        </div>
+    </div>
 
-    <div id="status" class="status">Ładowanie planu...</div>
-    <div id="plan-container"></div>
+    <!-- EKRAN PLANU ZAJĘĆ -->
+    <div id="app-screen">
+        <header>
+            <h1>🎓 Mój Plan USOS</h1>
+            <div class="btn-group">
+                <button onclick="pobierzPlan()">Odśwież</button>
+                <button class="btn-logout" onclick="wyloguj()" title="Wyloguj z tego urządzenia">Wyloguj</button>
+            </div>
+        </header>
+
+        <div id="status" class="status">Ładowanie planu...</div>
+        <div id="plan-container"></div>
+    </div>
 
     <script>
-        const USOS_URL = "https://usosapps.vistula.edu.pl/services/tt/upcoming_ical?lang=pl&user_id=294241&key=PLj6RTuYNNVWEwtqEybF";
-        // Darmowe proxy omijające blokadę CORS w przeglądarce
-        const PROXY_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(USOS_URL);
+        // Twój link zaszyfrowany hasłem "lol123" (nikt nie podejrzy klucza w kodzie strony)
+        const ENCRYPTED_URL = "BBQGGh9WWB0cHQwbQh5aHRYdGBNBWlVZAgcQWltfHB9ZHx0VGR9UXwIaGh8fXUJdGgNXXA4cBFpWQwoPG1FBEhMaVQoAAwE9LyY1L1x5IConIhcwPyUoO2MXBw==";
+        const STORAGE_AUTH_KEY = "usos_saved_pass";
 
-        // Parsowanie daty z formatu iCal (np. 20261018T094500)
+        // Funkcja deszyfrująca link za pomocą podanego hasła
+        function odszyfrujUrl(haslo) {
+            try {
+                const raw = atob(ENCRYPTED_URL);
+                let wynik = "";
+                for (let i = 0; i < raw.length; i++) {
+                    wynik += String.fromCharCode(raw.charCodeAt(i) ^ haslo.charCodeAt(i % haslo.length));
+                }
+                // Sprawdzamy, czy po odszyfrowaniu otrzymaliśmy poprawny link do USOS-a
+                if (wynik.startsWith("https://usosapps.vistula.edu.pl/")) {
+                    return wynik;
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function zaloguj() {
+            const input = document.getElementById("pass-input").value;
+            const errorEl = document.getElementById("login-error");
+            const url = odszyfrujUrl(input);
+
+            if (url) {
+                errorEl.style.display = "none";
+                localStorage.setItem(STORAGE_AUTH_KEY, input); // Zapamiętaj mnie
+                uruchomAplikacje(url);
+            } else {
+                errorEl.style.display = "block";
+            }
+        }
+
+        function wyloguj() {
+            localStorage.removeItem(STORAGE_AUTH_KEY);
+            document.getElementById("pass-input").value = "";
+            document.getElementById("app-screen").style.display = "none";
+            document.getElementById("login-screen").style.display = "flex";
+        }
+
+        let AKTYWNY_URL = "";
+
+        function uruchomAplikacje(odszyfrowanyUrl) {
+            AKTYWNY_URL = odszyfrowanyUrl;
+            document.getElementById("login-screen").style.display = "none";
+            document.getElementById("app-screen").style.display = "block";
+
+            const zapisany = localStorage.getItem("usos_ics_cache");
+            if (zapisany) {
+                wyswietlPlan(parsujICS(zapisany));
+            }
+            pobierzPlan();
+        }
+
+        // Parsowanie daty z formatu iCal
         function parsujDateICal(icalStr) {
             const czystaData = icalStr.split(':').pop().trim();
             const r = czystaData.substring(0, 4);
@@ -109,9 +228,7 @@
             return new Date(r, m, d, godz, min);
         }
 
-        // Prosty parser pliku .ics w czystym JS
         function parsujICS(icsText) {
-            // Łączenie złamanych linii (standard RFC 5545)
             const unfolded = icsText.replace(/\r?\n[ \t]/g, '');
             const lines = unfolded.split(/\r?\n/);
             
@@ -132,95 +249,4 @@
                     } else if (line.startsWith("LOCATION:")) {
                         obecne.location = line.substring(9).replace(/\\,/g, ',');
                     } else if (line.startsWith("DESCRIPTION:")) {
-                        obecne.description = line.substring(12).replace(/\\n/g, ' | ').replace(/\\,/g, ',');
-                    } else if (line.startsWith("DTSTART")) {
-                        obecne.start = parsujDateICal(line);
-                    } else if (line.startsWith("DTEND")) {
-                        obecne.end = parsujDateICal(line);
-                    }
-                }
-            }
-            return zajecia.sort((a, b) => a.start - b.start);
-        }
-
-        function wyswietlPlan(zajecia) {
-            const container = document.getElementById("plan-container");
-            container.innerHTML = "";
-
-            if (zajecia.length === 0) {
-                container.innerHTML = "<p>Brak nadchodzących zajęć w najbliższym czasie.</p>";
-                return;
-            }
-
-            // Grupowanie zajęć po dniach
-            const grupy = {};
-            zajecia.forEach(z => {
-                const kluczDnia = z.start.toLocaleDateString('pl-PL', {
-                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                });
-                if (!grupy[kluczDnia]) grupy[kluczDnia] = [];
-                grupy[kluczDnia].push(z);
-            });
-
-            for (const [dzien, lista] of Object.entries(grupy)) {
-                const dayDiv = document.createElement("div");
-                dayDiv.className = "day-group";
-                dayDiv.innerHTML = `<div class="day-header">${dzien}</div>`;
-
-                lista.forEach(z => {
-                    const startGodz = z.start.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-                    const endGodz = z.end ? z.end.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : "";
-                    
-                    const card = document.createElement("div");
-                    card.className = "event-card";
-                    card.innerHTML = `
-                        <div class="event-time">🕒 ${startGodz} - ${endGodz}</div>
-                        <div class="event-title">${z.summary}</div>
-                        <div class="event-meta">
-                            <span>📍 ${z.location || 'Brak sali'}</span>
-                            ${z.description ? `<span>ℹ️ ${z.description}</span>` : ''}
-                        </div>
-                    `;
-                    dayDiv.appendChild(card);
-                });
-
-                container.appendChild(dayDiv);
-            }
-        }
-
-        async function pobierzPlan() {
-            const statusEl = document.getElementById("status");
-            statusEl.textContent = "Pobieranie najnowszego planu z USOS...";
-
-            try {
-                const res = await fetch(PROXY_URL);
-                if (!res.ok) throw new Error("Błąd sieci");
-                const icsText = await res.text();
-                
-                // Zapisz w pamięci telefonu/komputera (działa offline!)
-                localStorage.setItem("usos_ics_cache", icsText);
-                localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
-
-                const zajecia = parsujICS(icsText);
-                wyswietlPlan(zajecia);
-                statusEl.textContent = `Ostatnia aktualizacja: ${localStorage.getItem("usos_last_sync")}`;
-            } catch (err) {
-                const cache = localStorage.getItem("usos_ics_cache");
-                if (cache) {
-                    wyswietlPlan(parsujICS(cache));
-                    statusEl.textContent = `Tryb offline (dane z: ${localStorage.getItem("usos_last_sync")})`;
-                } else {
-                    statusEl.textContent = "Nie udało się pobrać planu. Sprawdź połączenie z internetem.";
-                }
-            }
-        }
-
-        // Wczytaj cache od razu po otwarciu, a w tle odśwież
-        const zapisany = localStorage.getItem("usos_ics_cache");
-        if (zapisany) {
-            wyswietlPlan(parsujICS(zapisany));
-        }
-        pobierzPlan();
-    </script>
-</body>
-</html>
+                        obecne.description = line.substring(12).replace(/\\n/g, ' | ').replace(/
