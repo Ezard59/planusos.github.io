@@ -472,15 +472,45 @@
         let isAnimating = false;
 
         // ==========================================
-        // SŁOWNIK WYKŁADOWCÓW (RĘCZNE PRZYPISANIE)
-        // Jeśli USOS nie podaje nazwiska w pliku ICS, 
-        // aplikacja weźmie je stąd po nazwie przedmiotu.
+        // SŁOWNIK WYKŁADOWCÓW Z USOS
+        // Możesz uzupełniać imionami i nazwiskami prowadzących.
         // ==========================================
         const PRZYPISANI_WYKLADOWCY = {
-            "Bazy danych I": "dr inż. Jan Kowalski",
-            "Technologie sieciowe": "mgr inż. Anna Nowak",
-            "Technika i architektura systemów cyfrowych": "prof. dr hab. Janusz Tracz",
-            // "Nazwa przedmiotu": "Tytuł i Nazwisko",
+            "Bazy danych I": {
+                w: "",
+                lab: "Mirosław Lisiecki",
+                cw: ""
+            },
+            "Języki i paradygmaty programowania": {
+                w: "",
+                lab: "",
+                cw: ""
+            },
+            "Podstawy programowania stron internetowych": {
+                w: "",
+                lab: "",
+                cw: ""
+            },
+            "Systemy operacyjne": {
+                w: "",
+                lab: "",
+                cw: ""
+            },
+            "Sztuczna inteligencja": {
+                w: "",
+                lab: "",
+                cw: ""
+            },
+            "Technika i architektura systemów cyfrowych": {
+                w: "",
+                lab: "",
+                cw: ""
+            },
+            "Technologie sieciowe": {
+                w: "",
+                lab: "",
+                cw: ""
+            }
         };
 
         function sprawdzHaslo(wpisane) {
@@ -555,18 +585,19 @@
             return { tekst: `📍 Sala ${sala}`, zdalnie: false };
         }
 
-        // ZMODYFIKOWANA FUNKCJA - Szuka w pliku ICS LUB bierze ze słownika
-        function wyciagnijProwadzacego(rawDescription, nazwaPrzedmiotu) {
-            // 1. Sprawdzamy nasz własny słownik na samej górze kodu
+        function wyciagnijProwadzacego(rawDescription, nazwaPrzedmiotu, typZajecia) {
             if (nazwaPrzedmiotu) {
-                for (const [przedmiot, wykladowca] of Object.entries(PRZYPISANI_WYKLADOWCY)) {
+                for (const [przedmiot, prowadzacyDane] of Object.entries(PRZYPISANI_WYKLADOWCY)) {
                     if (nazwaPrzedmiotu.toLowerCase().includes(przedmiot.toLowerCase())) {
-                        return wykladowca;
+                        if (typeof prowadzacyDane === 'string') {
+                            return prowadzacyDane;
+                        } else if (typeof prowadzacyDane === 'object') {
+                            return prowadzacyDane[typZajecia] || "";
+                        }
                     }
                 }
             }
 
-            // 2. Jeśli nie ma w słowniku, szukamy w pliku ICS (rozszerzony Regex)
             if (!rawDescription) return "";
             const match = rawDescription.match(/(?:Prowadzący|Nauczyciel|Wykładowca):\s*([^|\n\r]+)/i);
             return match ? match[1].trim() : "";
@@ -588,8 +619,7 @@
                         const salaInfo = wyciagnijSale(obecne.description, obecne.location);
                         obecne.salaTekst = salaInfo.tekst;
                         obecne.czyZdalnie = salaInfo.zdalnie;
-                        // Przekazujemy nazwę przedmiotu, by słownik mógł zadziałać
-                        obecne.prowadzacy = wyciagnijProwadzacego(obecne.description, obecne.czystaNazwa);
+                        obecne.prowadzacy = wyciagnijProwadzacego(obecne.description, obecne.czystaNazwa, obecne.typKod);
                         zajecia.push(obecne);
                     }
                     obecne = null;
