@@ -30,6 +30,7 @@
             padding: 16px;
             max-width: 800px;
             margin: 0 auto;
+            user-select: none; /* Zapobiega zaznaczaniu tekstu przy przeciąganiu */
         }
         #login-screen {
             display: flex;
@@ -60,6 +61,7 @@
             font-size: 1rem;
             outline: none;
             text-align: center;
+            user-select: text;
         }
         input[type="password"]:focus { border-color: var(--accent); }
         .error-msg {
@@ -100,7 +102,7 @@
             margin-bottom: 14px;
         }
 
-        /* Pasek nawigacji miesięcy */
+        /* Pasek nawigacji miesięcy ze strzałkami po bokach */
         .month-nav {
             display: flex;
             justify-content: space-between;
@@ -116,13 +118,17 @@
             font-weight: 700;
             color: var(--accent);
             text-transform: capitalize;
+            text-align: center;
+            flex-grow: 1;
         }
         .month-btn {
             background: rgba(56, 189, 248, 0.1);
             color: var(--accent);
             border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 6px 12px;
-            font-size: 0.9rem;
+            padding: 8px 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
         }
         .month-btn:hover {
             background: rgba(56, 189, 248, 0.2);
@@ -371,14 +377,14 @@
 
         <div id="status" class="status">Ładowanie planu...</div>
 
-        <!-- Górny panel na żywo (zawsze widoczny niezależnie od miesiąca) -->
+        <!-- Górny panel na żywo -->
         <div id="hero-banner" class="hero-banner"></div>
 
-        <!-- Przełącznik miesięcy -->
+        <!-- Pasek nawigacji ze strzałkami po bokach -->
         <div class="month-nav">
-            <button type="button" class="month-btn" onclick="zmienMiesiac(-1)">◀ Poprzedni</button>
-            <div id="current-month-title" class="month-title">Ładowanie...</div>
-            <button type="button" class="month-btn" onclick="zmienMiesiac(1)">Następny ▶</button>
+            <button type="button" class="month-btn" onclick="zmienMiesiac(-1)">◀</button>
+            <div id="current-month-title" class="month-title">Wczytywanie...</div>
+            <button type="button" class="month-btn" onclick="zmienMiesiac(1)">▶</button>
         </div>
 
         <div class="legend">
@@ -393,9 +399,13 @@
     <script>
         const STORAGE_AUTH_KEY = "usos_logged_in_v3";
         let WSZYSTKIE_ZAJECIA = [];
-        let dostepneMiesiace = []; // Lista kluczy np. ["2026-10", "2026-11"]
+        let dostepneMiesiace = [];
         let aktualnyIndeksMiesiaca = 0;
         let timerInterval = null;
+
+        // Zmienne do obsługi gestu przeciągania (swipe)
+        let touchStartX = 0;
+        let touchEndX = 0;
 
         function sprawdzHaslo(wpisane) {
             return wpisane && wpisane.trim().toLowerCase() === "lol123";
@@ -522,11 +532,10 @@
             WSZYSTKIE_ZAJECIA.forEach(z => {
                 const rok = z.start.getFullYear();
                 const miesiac = String(z.start.getMonth() + 1).padStart(2, '0');
-                zetawMiesiecy.add(`${rok}-${miesiac}`);
+                zestawMiesiecy.add(`${rok}-${miesiac}`);
             });
-            dostepneMiesiace = Array.from(zetawMiesiecy).sort();
+            dostepneMiesiace = Array.from(zestawMiesiecy).sort();
 
-            // Znajdź domyślny miesiąc (bieżący lub najbliższy przyszły)
             const teraz = new Date();
             const rokTeraz = teraz.getFullYear();
             const miesiacTeraz = String(teraz.getMonth() + 1).padStart(2, '0');
@@ -536,7 +545,6 @@
             if (znalezionyIndeks !== -1) {
                 aktualnyIndeksMiesiaca = znalezionyIndeks;
             } else {
-                // Jeśli w bieżącym miesiącu nie ma zajęć, znajdź pierwszy nadchodzący
                 const przyszlyIndeks = dostepneMiesiace.findIndex(m => m > kluczBiezacy);
                 aktualnyIndeksMiesiaca = przyszlyIndeks !== -1 ? przyszlyIndeks : (dostepneMiesiace.length > 0 ? 0 : -1);
             }
@@ -587,10 +595,8 @@
             const [rokStr, miesStr] = wybraneKluczMiesiaca.split('-');
             const dataMiesiacaRef = new Date(parseInt(rokStr), parseInt(miesStr) - 1, 1);
             
-            const nazwaMiesiacaTekst = dataMiesiacaRef.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
-            titleEl.textContent = nazwaMiesiacaTekst;
+            titleEl.textContent = dataMiesiacaRef.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
 
-            // Filtruj zajęcia tylko dla wybranego miesiąca
             const zajeciaWpisuMiesiaca = WSZYSTKIE_ZAJECIA.filter(z => {
                 const zRok = z.start.getFullYear();
                 const zMies = String(z.start.getMonth() + 1).padStart(2, '0');
@@ -663,7 +669,7 @@
             let nastepne = null;
 
             WSZYSTKIE_ZAJECIA.forEach((z, idx) => {
-                z._id = idx; // Przypisz unikalne id do śledzenia w całej liście
+                z._id = idx;
                 const card = document.getElementById(`event-card-${z._id}`);
                 const badgeBox = document.getElementById(`event-badge-${z._id}`);
                 const progressBox = document.getElementById(`event-progress-${z._id}`);
@@ -704,7 +710,6 @@
                 }
             });
 
-            // Podświetl następne zajęcia na aktualnie wyświetlanej karcie (jeśli jest w tym miesiącu)
             if (nastepne) {
                 const nextCard = document.getElementById(`event-card-${nastepne._id}`);
                 const nextBadge = document.getElementById(`event-badge-${nastepne._id}`);
@@ -765,6 +770,28 @@
                 } else {
                     statusEl.textContent = "⏳ Czekam na wygenerowanie pliku plan.ics w zakładce Actions...";
                 }
+            }
+        }
+
+        // Obsługa gestów dotykowych (swipe / przeciąganie na telefonie)
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            obslozPrzeciagniecie();
+        });
+
+        function obslozPrzeciagniecie() {
+            const progPrzesuniecia = 50; // minimalna długość ruchu w pikselach
+            if (touchEndX < touchStartX - progPrzesuniecia) {
+                // Przeciągnięcie w lewo -> Następny miesiąc
+                zmienMiesiac(1);
+            }
+            if (touchEndX > touchStartX + progPrzesuniecia) {
+                // Przeciągnięcie w prawo -> Poprzedni miesiąc
+                zmienMiesiac(-1);
             }
         }
 
