@@ -20,7 +20,7 @@
             --type-w: #a855f7;   /* Fioletowy - Wykład */
             --type-lab: #06b6d4; /* Cyjan - Laboratorium */
             --type-cw: #f97316;  /* Pomarańczowy - Ćwiczenia */
-            --type-inne: #64748b;
+            --type-inne: #475569;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -204,32 +204,31 @@
 
         .event-card {
             background: var(--card);
-            border: 1px solid var(--border);
-            border-left: 5px solid var(--type-inne);
-            border-radius: 10px;
+            border: 2px solid var(--type-inne); /* Pełna ramka w kolorze typu zajęć */
+            border-radius: 12px;
             padding: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
             gap: 8px;
             transition: opacity 0.2s;
         }
-        /* Kolor lewego paska zależnie od typu zajęć */
-        .event-card.card-w { border-left-color: var(--type-w); }
-        .event-card.card-lab { border-left-color: var(--type-lab); }
-        .event-card.card-cw { border-left-color: var(--type-cw); }
+        /* Kolory pełnej ramki zależnie od typu zajęć */
+        .event-card.card-w { border-color: var(--type-w); }
+        .event-card.card-lab { border-color: var(--type-lab); }
+        .event-card.card-cw { border-color: var(--type-cw); }
 
         .event-card.past-event {
             opacity: 0.42;
         }
         .event-card.live-event {
-            border-color: var(--live);
-            border-left-color: var(--live);
-            border-left-width: 6px;
+            border-color: var(--live) !important;
+            border-width: 2.5px;
             background: rgba(34, 197, 94, 0.08);
         }
         .event-card.next-event {
-            border-color: var(--next);
+            border-color: var(--next) !important;
+            border-width: 2.5px;
         }
         .event-top {
             display: flex;
@@ -400,7 +399,6 @@
             return new Date(r, m, d, godz, min);
         }
 
-        // Rozpoznaje typ zajęć (Wykład, Lab, Ćwiczenia) i czyści nazwę przedmiotu
         function rozpoznajTypZajec(rawSummary) {
             const s = (rawSummary || "").trim();
 
@@ -432,15 +430,11 @@
             };
         }
 
-        // Wyciąga sam numer sali lub informację o MS Teams (usuwa linki i adres uczelni)
         function wyciagnijSale(rawDescription, rawLocation) {
             const tekst = `${rawDescription || ""} | ${rawLocation || ""}`;
-
-            // Szukamy wzorca "Sala: ..." przed znakiem "|" lub końcem linii
             const matchSala = tekst.match(/Sala:\s*([^|\n\r]+)/i);
             let sala = matchSala ? matchSala[1].trim() : "";
 
-            // Jeśli nie ma "Sala:", sprawdzamy czy gdziekolwiek pada słowo Teams / zdalnie
             if (!sala && /teams|zdaln|online/i.test(tekst)) {
                 sala = "Teams";
             }
