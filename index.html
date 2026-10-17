@@ -204,7 +204,7 @@
 
         .event-card {
             background: var(--card);
-            border: 2px solid var(--type-inne); /* Pełna ramka w kolorze typu zajęć */
+            border: 2px solid var(--type-inne);
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 12px;
@@ -213,7 +213,6 @@
             gap: 8px;
             transition: opacity 0.2s;
         }
-        /* Kolory pełnej ramki zależnie od typu zajęć */
         .event-card.card-w { border-color: var(--type-w); }
         .event-card.card-lab { border-color: var(--type-lab); }
         .event-card.card-cw { border-color: var(--type-cw); }
@@ -277,6 +276,18 @@
             background: rgba(56, 189, 248, 0.15);
             border-color: rgba(56, 189, 248, 0.45);
             color: #7dd3fc;
+        }
+        .teacher-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #e9d5ff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 500;
         }
 
         /* Pasek postępu */
@@ -450,6 +461,16 @@
             return { tekst: `📍 Sala ${sala}`, zdalnie: false };
         }
 
+        function wyciagnijProwadzacego(rawDescription) {
+            if (!rawDescription) return "";
+            // Szukamy np. "Prowadzący: dr Jan Kowalski" lub "Prowadzący: prof. hab. ..."
+            const match = rawDescription.match(/Prowadzący:\s*([^|\n\r]+)/i);
+            if (match) {
+                return match[1].trim();
+            }
+            return "";
+        }
+
         function parsujICS(icsText) {
             const unfolded = icsText.replace(/\r?\n[ \t]/g, '');
             const lines = unfolded.split(/\r?\n/);
@@ -470,6 +491,8 @@
                         const salaInfo = wyciagnijSale(obecne.description, obecne.location);
                         obecne.salaTekst = salaInfo.tekst;
                         obecne.czyZdalnie = salaInfo.zdalnie;
+
+                        obecne.prowadzacy = wyciagnijProwadzacego(obecne.description);
 
                         zajecia.push(obecne);
                     }
@@ -563,6 +586,7 @@
                         <div class="event-title">${z.czystaNazwa}</div>
                         <div class="event-meta">
                             <span class="room-pill ${z.czyZdalnie ? 'is-remote' : ''}">${z.salaTekst}</span>
+                            ${z.prowadzacy ? `<span class="teacher-pill">👨‍🏫 ${z.prowadzacy}</span>` : ''}
                         </div>
                         <div id="event-progress-${z._id}"></div>
                     `;
@@ -637,7 +661,7 @@
                 hero.innerHTML = `
                     <div class="hero-label" style="color: var(--live);">🟢 Aktualnie trwają (${procent}%) • ${trwajace.typEtykieta}</div>
                     <div class="hero-title">${trwajace.czystaNazwa}</div>
-                    <div style="font-size: 0.85rem; color: var(--muted);">${trwajace.salaTekst} • Koniec za: <b style="color:var(--live)">${formatujOdliczanie(trwajace.end - teraz)}</b></div>
+                    <div style="font-size: 0.85rem; color: var(--muted);">${trwajace.salaTekst} ${trwajace.prowadzacy ? '• 👨‍🏫 ' + trwajace.prowadzacy : ''} • Koniec za: <b style="color:var(--live)">${formatujOdliczanie(trwajace.end - teraz)}</b></div>
                 `;
             } else if (nastepne) {
                 hero.style.display = "flex";
@@ -646,7 +670,7 @@
                     <div class="hero-label" style="color: var(--next);">⏳ Kolejne zajęcia (${nastepne.typEtykieta}) za:</div>
                     <div class="hero-timer" style="color: var(--next);">${formatujOdliczanie(nastepne.start - teraz)}</div>
                     <div class="hero-title">${nastepne.czystaNazwa}</div>
-                    <div style="font-size: 0.85rem; color: var(--muted);">${nastepne.salaTekst} • 🕒 ${nastepne.start.toLocaleDateString('pl-PL', {weekday: 'short', day: 'numeric', month: 'short'})} ${nastepne.start.toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted);">${nastepne.salaTekst} ${nastepne.prowadzacy ? '• 👨‍🏫 ' + nastepne.prowadzacy : ''} • 🕒 ${nastepne.start.toLocaleDateString('pl-PL', {weekday: 'short', day: 'numeric', month: 'short'})} ${nastepne.start.toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})}</div>
                 `;
             } else {
                 hero.style.display = "none";
