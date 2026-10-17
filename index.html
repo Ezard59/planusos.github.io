@@ -30,10 +30,7 @@
             padding: 16px;
             max-width: 800px;
             margin: 0 auto;
-            user-select: none;
             overflow-x: hidden;
-            touch-action: pan-y;
-            overscroll-behavior-x: none;
         }
         
         /* Pływające przyciski na bokach */
@@ -132,7 +129,6 @@
             font-size: 1rem;
             outline: none;
             text-align: center;
-            user-select: text;
         }
         input[type="password"]:focus { border-color: var(--accent); }
         .error-msg {
@@ -140,7 +136,15 @@
             font-size: 0.85rem;
             display: none;
         }
-        #app-screen { display: none; }
+        
+        /* Blokujemy gesty i zaznaczanie TYLKO wewnątrz aplikacji, chroniąc ekran logowania */
+        #app-screen { 
+            display: none; 
+            user-select: none;
+            touch-action: pan-y;
+            overscroll-behavior-x: none;
+        }
+
         header {
             display: flex;
             justify-content: space-between;
@@ -178,8 +182,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(30, 41, 59, 0.85); /* Lekko przezroczyste tło */
-            backdrop-filter: blur(12px); /* Rozmycie zawartości pod spodem */
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 12px 16px;
@@ -187,8 +191,8 @@
             overflow: hidden;
             
             position: sticky;
-            top: 10px; /* Przylega 10px od góry ekranu */
-            z-index: 50; /* Nad wszystkimi kafelkami */
+            top: 10px;
+            z-index: 50;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .month-title {
@@ -291,11 +295,6 @@
         .type-lab { background: rgba(6, 182, 212, 0.18); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.4); }
         .type-cw { background: rgba(249, 115, 22, 0.18); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.4); }
         .type-inne { background: rgba(100, 116, 139, 0.2); color: #cbd5e1; border: 1px solid rgba(100, 116, 139, 0.4); }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.65; }
-        }
 
         .event-card {
             background: var(--card);
@@ -474,14 +473,18 @@
         }
 
         function zaloguj() {
-            const input = document.getElementById("pass-input").value;
-            const errorEl = document.getElementById("login-error");
-            errorEl.style.display = "none";
-            if (sprawdzHaslo(input)) {
-                localStorage.setItem(STORAGE_AUTH_KEY, "true");
-                uruchomAplikacje();
-            } else {
-                errorEl.style.display = "block";
+            try {
+                const input = document.getElementById("pass-input").value;
+                const errorEl = document.getElementById("login-error");
+                errorEl.style.display = "none";
+                if (sprawdzHaslo(input)) {
+                    localStorage.setItem(STORAGE_AUTH_KEY, "true");
+                    uruchomAplikacje();
+                } else {
+                    errorEl.style.display = "block";
+                }
+            } catch(e) {
+                console.error("Błąd logowania: ", e);
             }
         }
 
@@ -571,7 +574,6 @@
                     else if (line.startsWith("DTEND")) obecne.end = parsujDateICal(line);
                 }
             }
-            // Zmiana: nadajemy _id natychmiast po posortowaniu, żeby szarzenie działało przy 1. ładowaniu
             return zajecia.sort((a, b) => a.start - b.start).map((z, idx) => {
                 z._id = idx;
                 return z;
@@ -695,4 +697,173 @@
                 grupa.lista.forEach(z => {
                     const startGodz = z.start.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
                     const endGodz = z.end ? z.end.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : "";
-                    const
+                    const card = document.createElement("div");
+                    card.className = `event-card card-${z.typKod}`;
+                    card.id = `event-card-${z._id}`;
+                    card.innerHTML = `
+                        <div class="event-top">
+                            <div class="event-top-left">
+                                <span class="event-time">🕒 ${startGodz} - ${endGodz}</span>
+                                <span class="type-badge type-${z.typKod}">${z.typEtykieta}</span>
+                            </div>
+                            <div id="event-badge-${z._id}"></div>
+                        </div>
+                        <div class="event-title">${z.czystaNazwa}</div>
+                        <div class="event-meta">
+                            <span class="room-pill ${z.czyZdalnie ? 'is-remote' : ''}">${z.salaTekst}</span>
+                            ${z.prowadzacy ? `<span class="teacher-pill">👨‍🏫 ${z.prowadzacy}</span>` : ''}
+                        </div>
+                        <div id="event-progress-${z._id}"></div>
+                    `;
+                    dayDiv.appendChild(card);
+                });
+                container.appendChild(dayDiv);
+            }
+            aktualizujLicznikiNaZywo();
+        }
+
+        function aktualizujLicznikiNaZywo() {
+            if (WSZYSTKIE_ZAJECIA.length === 0) return;
+            const teraz = new Date();
+            let trwajace = null;
+            let nastepne = null;
+
+            WSZYSTKIE_ZAJECIA.forEach(z => {
+                const card = document.getElementById(`event-card-${z._id}`);
+                const badgeBox = document.getElementById(`event-badge-${z._id}`);
+                const progressBox = document.getElementById(`event-progress-${z._id}`);
+
+                if (card && badgeBox && progressBox) {
+                    card.classList.remove("past-event", "live-event", "next-event");
+                    badgeBox.innerHTML = "";
+                    progressBox.innerHTML = "";
+                    if (z.end && teraz >= z.end) card.classList.add("past-event");
+                    else if (z.end && teraz >= z.start && teraz < z.end) {
+                        trwajace = z;
+                        card.classList.add("live-event");
+                        badgeBox.innerHTML = `<span class="badge badge-live">Trwa teraz</span>`;
+                        const calkowityCzas = z.end - z.start;
+                        const minelo = teraz - z.start;
+                        const procent = Math.min(100, Math.max(0, Math.round((minelo / calkowityCzas) * 100)));
+                        const doKonca = formatujOdliczanie(z.end - teraz);
+                        progressBox.innerHTML = `
+                            <div class="progress-wrap">
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${procent}%"></div></div>
+                                <div class="progress-info"><span>Postęp: ${procent}%</span><span>Koniec za: ${doKonca}</span></div>
+                            </div>
+                        `;
+                    }
+                }
+                if (teraz < z.start && !nastepne) nastepne = z;
+            });
+
+            if (nastepne) {
+                const nextCard = document.getElementById(`event-card-${nastepne._id}`);
+                const nextBadge = document.getElementById(`event-badge-${nastepne._id}`);
+                if (nextCard && nextBadge) {
+                    nextCard.classList.add("next-event");
+                    nextBadge.innerHTML = `<span class="badge badge-next">Start za ${formatujOdliczanie(nastepne.start - teraz)}</span>`;
+                }
+            }
+
+            const hero = document.getElementById("hero-banner");
+            if (trwajace) {
+                const calkowity = trwajace.end - trwajace.start;
+                const procent = Math.min(100, Math.max(0, Math.round(((teraz - trwajace.start) / calkowity) * 100)));
+                hero.style.display = "flex";
+                hero.className = "hero-banner is-live";
+                hero.innerHTML = `
+                    <div class="hero-label" style="color: var(--live);">🟢 Aktualnie trwają (${procent}%) • ${trwajace.typEtykieta}</div>
+                    <div class="hero-title">${trwajace.czystaNazwa}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted);">${trwajace.salaTekst} ${trwajace.prowadzacy ? '• 👨‍🏫 ' + trwajace.prowadzacy : ''} • Koniec za: <b style="color:var(--live)">${formatujOdliczanie(trwajace.end - teraz)}</b></div>
+                `;
+            } else if (nastepne) {
+                hero.style.display = "flex";
+                hero.className = "hero-banner is-next";
+                hero.innerHTML = `
+                    <div class="hero-label" style="color: var(--next);">⏳ Kolejne zajęcia (${nastepne.typEtykieta}) za:</div>
+                    <div class="hero-timer" style="color: var(--next);">${formatujOdliczanie(nastepne.start - teraz)}</div>
+                    <div class="hero-title">${nastepne.czystaNazwa}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted);">${nastepne.salaTekst} ${nastepne.prowadzacy ? '• 👨‍🏫 ' + nastepne.prowadzacy : ''} • 🕒 ${nastepne.start.toLocaleDateString('pl-PL', {weekday: 'short', day: 'numeric', month: 'short'})} ${nastepne.start.toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})}</div>
+                `;
+            } else hero.style.display = "none";
+        }
+
+        async function pobierzPlan() {
+            const statusEl = document.getElementById("status");
+            statusEl.textContent = "Pobieranie planu...";
+            try {
+                const res = await fetch("./plan.ics?t=" + Date.now());
+                if (!res.ok) throw new Error("Brak pliku plan.ics");
+                const icsText = await res.text();
+                localStorage.setItem("usos_ics_cache", icsText);
+                localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
+                WSZYSTKIE_ZAJECIA = parsujICS(icsText);
+                inicjalizujMiesiace();
+                wyswietlPlan();
+                statusEl.textContent = `✅ Zsynchronizowano: ${localStorage.getItem("usos_last_sync")}`;
+            } catch (err) {
+                const cache = localStorage.getItem("usos_ics_cache");
+                if (cache) {
+                    WSZYSTKIE_ZAJECIA = parsujICS(cache);
+                    inicjalizujMiesiace();
+                    wyswietlPlan();
+                    statusEl.textContent = `⚡ Tryb offline (zapisano: ${localStorage.getItem("usos_last_sync")})`;
+                } else statusEl.textContent = "⏳ Czekam na wygenerowanie pliku plan.ics w zakładce Actions...";
+            }
+        }
+
+        /* ----- ZAAWANSOWANA OBSŁUGA PRZESUWANIA (SWIPE I MYSZKA) ----- */
+        let startX = 0, startY = 0, endX = 0, endY = 0;
+        let isMouseDown = false;
+
+        // Blokada działania na ekranie logowania
+        function czyAplikacjaAktywna() {
+            return document.getElementById("app-screen").style.display === "block";
+        }
+
+        function handleGesture() {
+            const xDiff = endX - startX;
+            const yDiff = endY - startY;
+            
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 50) {
+                if (xDiff < 0) zmienMiesiac(1); 
+                else zmienMiesiac(-1); 
+            }
+        }
+
+        document.addEventListener('touchstart', e => {
+            if (!czyAplikacjaAktywna()) return; // Gesty nieaktywne podczas logowania!
+            startX = e.changedTouches[0].clientX;
+            startY = e.changedTouches[0].clientY;
+        }, { passive: true });
+
+        document.addEventListener('touchend', e => {
+            if (!czyAplikacjaAktywna()) return;
+            endX = e.changedTouches[0].clientX;
+            endY = e.changedTouches[0].clientY;
+            handleGesture();
+        }, { passive: true });
+
+        document.addEventListener('mousedown', e => {
+            if (!czyAplikacjaAktywna()) return;
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return; 
+            isMouseDown = true;
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', e => {
+            if (!czyAplikacjaAktywna() || !isMouseDown) return;
+            isMouseDown = false;
+            endX = e.clientX;
+            endY = e.clientY;
+            handleGesture();
+        });
+
+        window.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem(STORAGE_AUTH_KEY) === "true") uruchomAplikacje();
+        });
+    </script>
+</body>
+</html>
