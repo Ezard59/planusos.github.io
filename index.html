@@ -23,7 +23,6 @@
             max-width: 800px;
             margin: 0 auto;
         }
-        /* Ekran logowania */
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -62,7 +61,6 @@
             font-size: 0.85rem;
             display: none;
         }
-        /* Główna aplikacja */
         #app-screen { display: none; }
         header {
             display: flex;
@@ -139,9 +137,9 @@
         <div class="login-box">
             <h2>🔒 Dostęp do planu</h2>
             <p style="font-size: 0.85rem; color: var(--muted);">Wpisz hasło jednorazowo, aby odblokować i zapamiętać urządzenie.</p>
-            <input type="password" id="pass-input" placeholder="Hasło..." onkeydown="if(event.key==='Enter') zaloguj()">
+            <input type="password" id="pass-input" placeholder="Hasło..." autocapitalize="none" autocorrect="off" onkeydown="if(event.key==='Enter') zaloguj()">
             <div id="login-error" class="error-msg">Nieprawidłowe hasło!</div>
-            <button onclick="zaloguj()">Odblokuj</button>
+            <button type="button" onclick="zaloguj()">Odblokuj</button>
         </div>
     </div>
 
@@ -150,8 +148,8 @@
         <header>
             <h1>🎓 Mój Plan USOS</h1>
             <div class="btn-group">
-                <button onclick="pobierzPlan()">Odśwież</button>
-                <button class="btn-logout" onclick="wyloguj()" title="Wyloguj z tego urządzenia">Wyloguj</button>
+                <button type="button" onclick="pobierzPlan()">Odśwież</button>
+                <button type="button" class="btn-logout" onclick="wyloguj()">Wyloguj</button>
             </div>
         </header>
 
@@ -160,26 +158,27 @@
     </div>
 
     <script>
-        // Twój link zaszyfrowany hasłem "lol123" (nikt nie podejrzy klucza w kodzie strony)
-        const ENCRYPTED_URL = "BBQGGh9WWB0cHQwbQh5aHRYdGBNBWlVZAgcQWltfHB9ZHx0VGR9UXwIaGh8fXUJdGgNXXA4cBFpWQwoPG1FBEhMaVQoAAwE9LyY1L1x5IConIhcwPyUoO2MXBw==";
-        const STORAGE_AUTH_KEY = "usos_saved_pass";
+        // Zaszyfrowane bajty Twojego linku (klucz: lol123)
+        const ENCRYPTED_BYTES = [
+            4,27,24,65,65,9,67,67,25,2,83,95,83,82,30,68,26,3,74,6,87,65,24,78,24,65,30,77,15,29,76,86,
+            23,30,83,76,25,65,78,76,20,83,83,29,14,12,18,0,28,3,67,27,24,72,21,82,25,12,14,91,82,2,10,
+            27,31,15,25,1,69,8,125,87,74,90,94,30,72,38,113,1,42,41,89,1,24,43,38,125,38,10,98,53
+        ];
+        const STORAGE_AUTH_KEY = "usos_saved_pass_v2";
+        let AKTYWNY_URL = "";
 
-        // Funkcja deszyfrująca link za pomocą podanego hasła
         function odszyfrujUrl(haslo) {
-            try {
-                const raw = atob(ENCRYPTED_URL);
-                let wynik = "";
-                for (let i = 0; i < raw.length; i++) {
-                    wynik += String.fromCharCode(raw.charCodeAt(i) ^ haslo.charCodeAt(i % haslo.length));
-                }
-                // Sprawdzamy, czy po odszyfrowaniu otrzymaliśmy poprawny link do USOS-a
-                if (wynik.startsWith("https://usosapps.vistula.edu.pl/")) {
-                    return wynik;
-                }
-                return null;
-            } catch (e) {
-                return null;
+            if (!haslo) return null;
+            // Usuwamy przypadkowe spacje i zamieniamy pierwszą literę na małą (gdyby klawiatura w telefonie zmieniła na "Lol123")
+            const czysteHaslo = haslo.trim().toLowerCase();
+            let wynik = "";
+            for (let i = 0; i < ENCRYPTED_BYTES.length; i++) {
+                wynik += String.fromCharCode(ENCRYPTED_BYTES[i] ^ czysteHaslo.charCodeAt(i % czysteHaslo.length));
             }
+            if (wynik.startsWith("https://usosapps.vistula.edu.pl/")) {
+                return wynik;
+            }
+            return null;
         }
 
         function zaloguj() {
@@ -189,7 +188,7 @@
 
             if (url) {
                 errorEl.style.display = "none";
-                localStorage.setItem(STORAGE_AUTH_KEY, input); // Zapamiętaj mnie
+                localStorage.setItem(STORAGE_AUTH_KEY, input.trim().toLowerCase());
                 uruchomAplikacje(url);
             } else {
                 errorEl.style.display = "block";
@@ -203,8 +202,6 @@
             document.getElementById("login-screen").style.display = "flex";
         }
 
-        let AKTYWNY_URL = "";
-
         function uruchomAplikacje(odszyfrowanyUrl) {
             AKTYWNY_URL = odszyfrowanyUrl;
             document.getElementById("login-screen").style.display = "none";
@@ -217,14 +214,13 @@
             pobierzPlan();
         }
 
-        // Parsowanie daty z formatu iCal
         function parsujDateICal(icalStr) {
             const czystaData = icalStr.split(':').pop().trim();
-            const r = czystaData.substring(0, 4);
-            const m = czystaData.substring(4, 6) - 1;
-            const d = czystaData.substring(6, 8);
-            const godz = czystaData.substring(9, 11) || "00";
-            const min = czystaData.substring(11, 13) || "00";
+            const r = parseInt(czystaData.substring(0, 4), 10);
+            const m = parseInt(czystaData.substring(4, 6), 10) - 1;
+            const d = parseInt(czystaData.substring(6, 8), 10);
+            const godz = parseInt(czystaData.substring(9, 11) || "0", 10);
+            const min = parseInt(czystaData.substring(11, 13) || "0", 10);
             return new Date(r, m, d, godz, min);
         }
 
@@ -249,4 +245,112 @@
                     } else if (line.startsWith("LOCATION:")) {
                         obecne.location = line.substring(9).replace(/\\,/g, ',');
                     } else if (line.startsWith("DESCRIPTION:")) {
-                        obecne.description = line.substring(12).replace(/\\n/g, ' | ').replace(/
+                        obecne.description = line.substring(12).replace(/\\n/g, ' | ').replace(/\\,/g, ',');
+                    } else if (line.startsWith("DTSTART")) {
+                        obecne.start = parsujDateICal(line);
+                    } else if (line.startsWith("DTEND")) {
+                        obecne.end = parsujDateICal(line);
+                    }
+                }
+            }
+            return zajecia.sort((a, b) => a.start - b.start);
+        }
+
+        function wyswietlPlan(zajecia) {
+            const container = document.getElementById("plan-container");
+            container.innerHTML = "";
+
+            if (zajecia.length === 0) {
+                container.innerHTML = "<p>Brak nadchodzących zajęć w najbliższym czasie.</p>";
+                return;
+            }
+
+            const grupy = {};
+            zajecia.forEach(z => {
+                const kluczDnia = z.start.toLocaleDateString('pl-PL', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                });
+                if (!grupy[kluczDnia]) grupy[kluczDnia] = [];
+                grupy[kluczDnia].push(z);
+            });
+
+            for (const [dzien, lista] of Object.entries(grupy)) {
+                const dayDiv = document.createElement("div");
+                dayDiv.className = "day-group";
+                dayDiv.innerHTML = `<div class="day-header">${dzien}</div>`;
+
+                lista.forEach(z => {
+                    const startGodz = z.start.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+                    const endGodz = z.end ? z.end.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : "";
+                    
+                    const card = document.createElement("div");
+                    card.className = "event-card";
+                    card.innerHTML = `
+                        <div class="event-time">🕒 ${startGodz} - ${endGodz}</div>
+                        <div class="event-title">${z.summary}</div>
+                        <div class="event-meta">
+                            <span>📍 ${z.location || 'Brak sali'}</span>
+                            ${z.description ? `<span>ℹ️ ${z.description}</span>` : ''}
+                        </div>
+                    `;
+                    dayDiv.appendChild(card);
+                });
+
+                container.appendChild(dayDiv);
+            }
+        }
+
+        // Pobieranie z obsługą zapasowego proxy na wypadek awarii pierwszego
+        async function pobierzZProxy(url) {
+            const proxies = [
+                "https://corsproxy.io/?" + encodeURIComponent(url),
+                "https://api.allorigins.win/raw?url=" + encodeURIComponent(url)
+            ];
+            for (const p of proxies) {
+                try {
+                    const res = await fetch(p);
+                    if (res.ok) {
+                        const text = await res.text();
+                        if (text.includes("BEGIN:VCALENDAR")) return text;
+                    }
+                } catch (e) {}
+            }
+            throw new Error("Wszystkie serwery proxy zawiodły");
+        }
+
+        async function pobierzPlan() {
+            const statusEl = document.getElementById("status");
+            statusEl.textContent = "Pobieranie najnowszego planu z USOS...";
+
+            try {
+                const icsText = await pobierzZProxy(AKTYWNY_URL);
+                
+                localStorage.setItem("usos_ics_cache", icsText);
+                localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
+
+                const zajecia = parsujICS(icsText);
+                wyswietlPlan(zajecia);
+                statusEl.textContent = `Ostatnia aktualizacja: ${localStorage.getItem("usos_last_sync")}`;
+            } catch (err) {
+                const cache = localStorage.getItem("usos_ics_cache");
+                if (cache) {
+                    wyswietlPlan(parsujICS(cache));
+                    statusEl.textContent = `Tryb offline (dane z: ${localStorage.getItem("usos_last_sync")})`;
+                } else {
+                    statusEl.textContent = "Nie udało się pobrać planu. Sprawdź połączenie z internetem.";
+                }
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const zapisaneHaslo = localStorage.getItem(STORAGE_AUTH_KEY);
+            if (zapisaneHaslo) {
+                const url = odszyfrujUrl(zapisaneHaslo);
+                if (url) {
+                    uruchomAplikacje(url);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
