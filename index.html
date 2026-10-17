@@ -30,42 +30,44 @@
             padding: 16px;
             max-width: 800px;
             margin: 0 auto;
-            user-select: none; /* Zapobiega zaznaczaniu tekstu przy przeciąganiu */
+            user-select: none; /* Zapobiega przypadkowemu zaznaczaniu tekstu podczas swipe'owania */
+            overflow-x: hidden;
         }
         
-        /* Pływające przyciski na bokach ekranu */
+        /* Pływające, "jebitnie wielkie" przyciski na bokach */
         .side-nav {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
-            width: 44px;
-            height: 80px;
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid var(--border);
+            width: clamp(60px, 8vw, 100px); /* Dynamiczna, duża szerokość */
+            height: 40vh; /* Zajmują 40% wysokości ekranu */
+            background: rgba(30, 41, 59, 0.4);
+            border: 2px solid var(--border);
             color: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 3.5rem; /* Ogromna strzałka */
             cursor: pointer;
             z-index: 1000;
-            backdrop-filter: blur(4px);
-            opacity: 0.5;
-            transition: opacity 0.2s, background 0.2s;
+            backdrop-filter: blur(10px); /* Mocniejsze rozmycie tła */
+            opacity: 0.6;
+            transition: all 0.2s ease-in-out;
         }
         .side-nav:hover, .side-nav:active {
             opacity: 1;
-            background: rgba(56, 189, 248, 0.15);
+            background: rgba(56, 189, 248, 0.2);
+            width: clamp(75px, 10vw, 120px); /* Powiększają się po najechaniu */
         }
         .side-nav.left {
             left: 0;
             border-left: none;
-            border-radius: 0 12px 12px 0;
+            border-radius: 0 24px 24px 0;
         }
         .side-nav.right {
             right: 0;
             border-right: none;
-            border-radius: 12px 0 0 12px;
+            border-radius: 24px 0 0 24px;
         }
 
         #login-screen {
@@ -150,7 +152,7 @@
             margin-bottom: 16px;
         }
         .month-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--accent);
             text-transform: capitalize;
@@ -268,6 +270,8 @@
             flex-direction: column;
             gap: 8px;
             transition: opacity 0.2s;
+            position: relative;
+            z-index: 1;
         }
         .event-card.card-w { border-color: var(--type-w); }
         .event-card.card-lab { border-color: var(--type-lab); }
@@ -428,10 +432,6 @@
         let aktualnyIndeksMiesiaca = 0;
         let timerInterval = null;
 
-        // Zmienne do obsługi gestu przeciągania (swipe)
-        let touchStartX = 0;
-        let touchEndX = 0;
-
         function sprawdzHaslo(wpisane) {
             return wpisane && wpisane.trim().toLowerCase() === "lol123";
         }
@@ -439,9 +439,7 @@
         function zaloguj() {
             const input = document.getElementById("pass-input").value;
             const errorEl = document.getElementById("login-error");
-
             errorEl.style.display = "none";
-
             if (sprawdzHaslo(input)) {
                 localStorage.setItem(STORAGE_AUTH_KEY, "true");
                 uruchomAplikacje();
@@ -486,16 +484,9 @@
 
         function rozpoznajTypZajec(rawSummary) {
             const s = (rawSummary || "").trim();
-
-            if (/^(W|Wyk|Wykład)\s*[-–:]/i.test(s)) {
-                return { kod: 'w', etykieta: '📖 Wykład', czystaNazwa: s.replace(/^(W|Wyk|Wykład)\s*[-–:]\s*/i, '') };
-            }
-            if (/^(Lab|Laboratorium)\s*[-–:]/i.test(s)) {
-                return { kod: 'lab', etykieta: '🔬 Laboratorium', czystaNazwa: s.replace(/^(Lab|Laboratorium)\s*[-–:]\s*/i, '') };
-            }
-            if (/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]/i.test(s)) {
-                return { kod: 'cw', etykieta: '✏️ Ćwiczenia', czystaNazwa: s.replace(/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]\s*/i, '') };
-            }
+            if (/^(W|Wyk|Wykład)\s*[-–:]/i.test(s)) return { kod: 'w', etykieta: '📖 Wykład', czystaNazwa: s.replace(/^(W|Wyk|Wykład)\s*[-–:]\s*/i, '') };
+            if (/^(Lab|Laboratorium)\s*[-–:]/i.test(s)) return { kod: 'lab', etykieta: '🔬 Laboratorium', czystaNazwa: s.replace(/^(Lab|Laboratorium)\s*[-–:]\s*/i, '') };
+            if (/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]/i.test(s)) return { kod: 'cw', etykieta: '✏️ Ćwiczenia', czystaNazwa: s.replace(/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]\s*/i, '') };
             return { kod: 'inne', etykieta: '🎓 Zajęcia', czystaNazwa: s };
         }
 
@@ -503,7 +494,6 @@
             const tekst = `${rawDescription || ""} | ${rawLocation || ""}`;
             const matchSala = tekst.match(/Sala:\s*([^|\n\r]+)/i);
             let sala = matchSala ? matchSala[1].trim() : "";
-
             if (!sala && /teams|zdaln|online/i.test(tekst)) sala = "Teams";
             if (!sala) return { tekst: "📍 Brak sali", zdalnie: false };
             if (/teams|zdaln|online/i.test(sala)) return { tekst: "💻 ZDALNIE (Teams)", zdalnie: true };
@@ -519,24 +509,19 @@
         function parsujICS(icsText) {
             const unfolded = icsText.replace(/\r?\n[ \t]/g, '');
             const lines = unfolded.split(/\r?\n/);
-            
             const zajecia = [];
             let obecne = null;
-
             for (let line of lines) {
-                if (line === "BEGIN:VEVENT") {
-                    obecne = {};
-                } else if (line === "END:VEVENT" && obecne) {
+                if (line === "BEGIN:VEVENT") obecne = {};
+                else if (line === "END:VEVENT" && obecne) {
                     if (obecne.start && obecne.summary) {
                         const typInfo = rozpoznajTypZajec(obecne.summary);
                         obecne.typKod = typInfo.kod;
                         obecne.typEtykieta = typInfo.etykieta;
                         obecne.czystaNazwa = typInfo.czystaNazwa;
-
                         const salaInfo = wyciagnijSale(obecne.description, obecne.location);
                         obecne.salaTekst = salaInfo.tekst;
                         obecne.czyZdalnie = salaInfo.zdalnie;
-
                         obecne.prowadzacy = wyciagnijProwadzacego(obecne.description);
                         zajecia.push(obecne);
                     }
@@ -560,16 +545,13 @@
                 zestawMiesiecy.add(`${rok}-${miesiac}`);
             });
             dostepneMiesiace = Array.from(zestawMiesiecy).sort();
-
             const teraz = new Date();
             const rokTeraz = teraz.getFullYear();
             const miesiacTeraz = String(teraz.getMonth() + 1).padStart(2, '0');
             const kluczBiezacy = `${rokTeraz}-${miesiacTeraz}`;
-
             const znalezionyIndeks = dostepneMiesiace.indexOf(kluczBiezacy);
-            if (znalezionyIndeks !== -1) {
-                aktualnyIndeksMiesiaca = znalezionyIndeks;
-            } else {
+            if (znalezionyIndeks !== -1) aktualnyIndeksMiesiaca = znalezionyIndeks;
+            else {
                 const przyszlyIndeks = dostepneMiesiace.findIndex(m => m > kluczBiezacy);
                 aktualnyIndeksMiesiaca = przyszlyIndeks !== -1 ? przyszlyIndeks : (dostepneMiesiace.length > 0 ? 0 : -1);
             }
@@ -584,9 +566,7 @@
         }
 
         function czyTenSamDzien(d1, d2) {
-            return d1.getFullYear() === d2.getFullYear() &&
-                   d1.getMonth() === d2.getMonth() &&
-                   d1.getDate() === d2.getDate();
+            return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
         }
 
         function formatujOdliczanie(ms) {
@@ -595,7 +575,6 @@
             const min = Math.floor(ms / 60000) % 60;
             const godz = Math.floor(ms / 3600000) % 24;
             const dni = Math.floor(ms / 86400000);
-
             const czesci = [];
             if (dni > 0) czesci.push(`${dni}d`);
             if (godz > 0 || dni > 0) czesci.push(`${godz}h`);
@@ -619,7 +598,6 @@
             const wybraneKluczMiesiaca = dostepneMiesiace[aktualnyIndeksMiesiaca];
             const [rokStr, miesStr] = wybraneKluczMiesiaca.split('-');
             const dataMiesiacaRef = new Date(parseInt(rokStr), parseInt(miesStr) - 1, 1);
-            
             titleEl.textContent = dataMiesiacaRef.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
 
             const zajeciaWpisuMiesiaca = WSZYSTKIE_ZAJECIA.filter(z => {
@@ -636,12 +614,8 @@
 
             const grupy = new Map();
             zajeciaWpisuMiesiaca.forEach((z, idx) => {
-                const kluczDnia = z.start.toLocaleDateString('pl-PL', {
-                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-                });
-                if (!grupy.has(kluczDnia)) {
-                    grupy.set(kluczDnia, { data: z.start, lista: [] });
-                }
+                const kluczDnia = z.start.toLocaleDateString('pl-PL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                if (!grupy.has(kluczDnia)) grupy.set(kluczDnia, { data: z.start, lista: [] });
                 grupy.get(kluczDnia).lista.push(z);
             });
 
@@ -649,17 +623,10 @@
                 const dzisiaj = czyTenSamDzien(grupa.data, teraz);
                 const dayDiv = document.createElement("div");
                 dayDiv.className = "day-group" + (dzisiaj ? " today-group" : "");
-                dayDiv.innerHTML = `
-                    <div class="day-header">
-                        <span>${dzienTekst}</span>
-                        ${dzisiaj ? '<span class="badge badge-today">Dzisiaj</span>' : ''}
-                    </div>
-                `;
-
+                dayDiv.innerHTML = `<div class="day-header"><span>${dzienTekst}</span>${dzisiaj ? '<span class="badge badge-today">Dzisiaj</span>' : ''}</div>`;
                 grupa.lista.forEach(z => {
                     const startGodz = z.start.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
                     const endGodz = z.end ? z.end.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : "";
-                    
                     const card = document.createElement("div");
                     card.className = `event-card card-${z.typKod}`;
                     card.id = `event-card-${z._id}`;
@@ -680,10 +647,8 @@
                     `;
                     dayDiv.appendChild(card);
                 });
-
                 container.appendChild(dayDiv);
             }
-
             aktualizujLicznikiNaZywo();
         }
 
@@ -703,36 +668,24 @@
                     card.classList.remove("past-event", "live-event", "next-event");
                     badgeBox.innerHTML = "";
                     progressBox.innerHTML = "";
-
-                    if (z.end && teraz >= z.end) {
-                        card.classList.add("past-event");
-                    } else if (z.end && teraz >= z.start && teraz < z.end) {
+                    if (z.end && teraz >= z.end) card.classList.add("past-event");
+                    else if (z.end && teraz >= z.start && teraz < z.end) {
                         trwajace = z;
                         card.classList.add("live-event");
                         badgeBox.innerHTML = `<span class="badge badge-live">Trwa teraz</span>`;
-
                         const calkowityCzas = z.end - z.start;
                         const minelo = teraz - z.start;
                         const procent = Math.min(100, Math.max(0, Math.round((minelo / calkowityCzas) * 100)));
                         const doKonca = formatujOdliczanie(z.end - teraz);
-
                         progressBox.innerHTML = `
                             <div class="progress-wrap">
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: ${procent}%"></div>
-                                </div>
-                                <div class="progress-info">
-                                    <span>Postęp: ${procent}%</span>
-                                    <span>Koniec za: ${doKonca}</span>
-                                </div>
+                                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${procent}%"></div></div>
+                                <div class="progress-info"><span>Postęp: ${procent}%</span><span>Koniec za: ${doKonca}</span></div>
                             </div>
                         `;
                     }
                 }
-
-                if (teraz < z.start && !nastepne) {
-                    nastepne = z;
-                }
+                if (teraz < z.start && !nastepne) nastepne = z;
             });
 
             if (nastepne) {
@@ -764,23 +717,18 @@
                     <div class="hero-title">${nastepne.czystaNazwa}</div>
                     <div style="font-size: 0.85rem; color: var(--muted);">${nastepne.salaTekst} ${nastepne.prowadzacy ? '• 👨‍🏫 ' + nastepne.prowadzacy : ''} • 🕒 ${nastepne.start.toLocaleDateString('pl-PL', {weekday: 'short', day: 'numeric', month: 'short'})} ${nastepne.start.toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})}</div>
                 `;
-            } else {
-                hero.style.display = "none";
-            }
+            } else hero.style.display = "none";
         }
 
         async function pobierzPlan() {
             const statusEl = document.getElementById("status");
             statusEl.textContent = "Pobieranie planu...";
-
             try {
                 const res = await fetch("./plan.ics?t=" + Date.now());
                 if (!res.ok) throw new Error("Brak pliku plan.ics");
                 const icsText = await res.text();
-                
                 localStorage.setItem("usos_ics_cache", icsText);
                 localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
-
                 WSZYSTKIE_ZAJECIA = parsujICS(icsText);
                 inicjalizujMiesiace();
                 wyswietlPlan();
@@ -792,36 +740,61 @@
                     inicjalizujMiesiace();
                     wyswietlPlan();
                     statusEl.textContent = `⚡ Tryb offline (zapisano: ${localStorage.getItem("usos_last_sync")})`;
+                } else statusEl.textContent = "⏳ Czekam na wygenerowanie pliku plan.ics w zakładce Actions...";
+            }
+        }
+
+        /* ----- ZAAWANSOWANA OBSŁUGA PRZESUWANIA (SWIPE I MYSZKA) ----- */
+        let startX = 0, startY = 0, endX = 0, endY = 0;
+        let isMouseDown = false;
+        const appScreen = document.getElementById("app-screen");
+
+        function handleGesture() {
+            const xDiff = endX - startX;
+            const yDiff = endY - startY;
+            // Sprawdzamy, czy ruch był bardziej w poziomie niż w pionie i czy był wystarczająco długi (> 50px)
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 50) {
+                if (xDiff < 0) {
+                    zmienMiesiac(1); // Swipe w lewo (następny)
                 } else {
-                    statusEl.textContent = "⏳ Czekam na wygenerowanie pliku plan.ics w zakładce Actions...";
+                    zmienMiesiac(-1); // Swipe w prawo (poprzedni)
                 }
             }
         }
 
-        // Obsługa gestów dotykowych (swipe / przeciąganie na telefonie)
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
+        // Obsługa dotyku (telefony)
+        appScreen.addEventListener('touchstart', e => {
+            startX = e.changedTouches[0].screenX;
+            startY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        appScreen.addEventListener('touchend', e => {
+            endX = e.changedTouches[0].screenX;
+            endY = e.changedTouches[0].screenY;
+            handleGesture();
+        }, { passive: true });
+
+        // Obsługa myszki (komputery)
+        appScreen.addEventListener('mousedown', e => {
+            isMouseDown = true;
+            startX = e.screenX;
+            startY = e.screenY;
         });
 
-        document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            obslozPrzeciagniecie();
+        appScreen.addEventListener('mouseup', e => {
+            if (!isMouseDown) return;
+            isMouseDown = false;
+            endX = e.screenX;
+            endY = e.screenY;
+            handleGesture();
         });
 
-        function obslozPrzeciagniecie() {
-            const progPrzesuniecia = 50; // minimalna długość ruchu w pikselach
-            if (touchEndX < touchStartX - progPrzesuniecia) {
-                zmienMiesiac(1); // Przeciągnięcie w lewo -> Następny miesiąc
-            }
-            if (touchEndX > touchStartX + progPrzesuniecia) {
-                zmienMiesiac(-1); // Przeciągnięcie w prawo -> Poprzedni miesiąc
-            }
-        }
+        appScreen.addEventListener('mouseleave', e => {
+            isMouseDown = false;
+        });
 
         window.addEventListener("DOMContentLoaded", () => {
-            if (localStorage.getItem(STORAGE_AUTH_KEY) === "true") {
-                uruchomAplikacje();
-            }
+            if (localStorage.getItem(STORAGE_AUTH_KEY) === "true") uruchomAplikacje();
         });
     </script>
 </body>
