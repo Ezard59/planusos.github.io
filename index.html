@@ -64,61 +64,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
             margin-bottom: 16px;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
         h1 { font-size: 1.35rem; }
-        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        button, .btn-label {
+        .btn-group { display: flex; gap: 8px; }
+        button {
             background: var(--accent);
             color: #0f172a;
             border: none;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             font-size: 0.85rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        button.btn-secondary, .btn-label.btn-secondary {
-            background: var(--card);
-            color: var(--text);
-            border: 1px solid var(--border);
         }
         button.btn-logout {
             background: transparent;
             color: var(--muted);
             border: 1px solid var(--border);
         }
-        button:active, .btn-label:active { opacity: 0.8; }
-        .status-box {
-            background: var(--card);
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 8px;
+        button:active { opacity: 0.8; }
+        .status {
             font-size: 0.85rem;
             color: var(--muted);
             margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .fallback-help {
-            display: none;
-            color: var(--text);
-            padding-top: 8px;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-        .fallback-help a {
-            color: var(--accent);
-            font-weight: 600;
         }
         .day-group { margin-bottom: 24px; }
         .day-header {
@@ -159,7 +130,6 @@
 </head>
 <body>
 
-    <!-- EKRAN LOGOWANIA -->
     <div id="login-screen">
         <div class="login-box">
             <h2>🔒 Dostęp do planu</h2>
@@ -170,39 +140,24 @@
         </div>
     </div>
 
-    <!-- EKRAN PLANU ZAJĘĆ -->
     <div id="app-screen">
         <header>
             <h1>🎓 Mój Plan USOS</h1>
             <div class="btn-group">
                 <button type="button" onclick="pobierzPlan()">🔄 Odśwież</button>
-                <label class="btn-label btn-secondary" title="Wgraj pobrany plik .ics ręcznie">
-                    📂 Wgraj .ics
-                    <input type="file" accept=".ics,text/calendar" style="display:none" onchange="wczytajPlikLokalny(event)">
-                </label>
                 <button type="button" class="btn-logout" onclick="wyloguj()">Wyloguj</button>
             </div>
         </header>
 
-        <div class="status-box">
-            <div id="status">Ładowanie planu...</div>
-            <div id="fallback-box" class="fallback-help">
-                ⚠️ Serwer USOS lub AdBlock zablokował pośredników proxy.<br>
-                1. <a id="direct-usos-link" href="#" target="_blank">Kliknij tutaj, aby pobrać plik z USOS</a> (pobierze się w ułamku sekundy).<br>
-                2. Kliknij przycisk <b>📂 Wgraj .ics</b> u góry i wybierz pobrany plik – plan zapisze się w pamięci urządzenia!
-            </div>
-        </div>
-
+        <div id="status" class="status">Ładowanie planu...</div>
         <div id="plan-container"></div>
     </div>
 
     <script>
         const STORAGE_AUTH_KEY = "usos_logged_in_v3";
-        const B64_URL = "aHR0cHM6Ly91c29zYXBwcy52aXN0dWxhLmVkdS5wbC9zZXJ2aWNlcy90dC91cGNvbWluZ19pY2FsP2xhbmc9cGwmdXNlcl9pZD0yOTQyNDEma2V5PVBMajZSVHVZTk5WV0V3dHFFeWJG";
 
         function sprawdzHaslo(wpisane) {
-            if (!wpisane) return false;
-            return wpisane.trim().toLowerCase() === "lol123";
+            return wpisane && wpisane.trim().toLowerCase() === "lol123";
         }
 
         function zaloguj() {
@@ -228,32 +183,12 @@
         function uruchomAplikacje() {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("app-screen").style.display = "block";
-            document.getElementById("direct-usos-link").href = atob(B64_URL);
 
             const zapisany = localStorage.getItem("usos_ics_cache");
             if (zapisany) {
                 wyswietlPlan(parsujICS(zapisany));
             }
             pobierzPlan();
-        }
-
-        function wczytajPlikLokalny(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const icsText = e.target.result;
-                if (icsText.includes("BEGIN:VCALENDAR")) {
-                    localStorage.setItem("usos_ics_cache", icsText);
-                    localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
-                    wyswietlPlan(parsujICS(icsText));
-                    document.getElementById("status").textContent = `Wczytano z pliku (${localStorage.getItem("usos_last_sync")})`;
-                    document.getElementById("fallback-box").style.display = "none";
-                } else {
-                    alert("To nie jest prawidłowy plik kalendarza .ics!");
-                }
-            };
-            reader.readAsText(file);
         }
 
         function parsujDateICal(icalStr) {
@@ -303,7 +238,7 @@
             container.innerHTML = "";
 
             if (zajecia.length === 0) {
-                container.innerHTML = "<p style='color:var(--muted);'>Brak zaplanowanych zajęć w bieżącym pliku kalendarza z USOS-a.</p>";
+                container.innerHTML = "<p style='color:var(--muted);'>Brak nadchodzących zajęć w pliku plan.ics.</p>";
                 return;
             }
 
@@ -342,61 +277,30 @@
             }
         }
 
-        // Pojedyncze zapytanie z limitem 4.5 sekundy (żeby nigdy nie wisiało w nieskończoność)
-        async function fetchZTimeoutem(url, czyJson = false) {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 4500);
-            try {
-                const res = await fetch(url, { signal: controller.signal });
-                clearTimeout(timer);
-                if (!res.ok) throw new Error("HTTP " + res.status);
-                const text = czyJson ? (await res.json()).contents : await res.text();
-                if (text && text.includes("BEGIN:VCALENDAR")) {
-                    return text;
-                }
-                throw new Error("Brak danych iCal");
-            } catch (e) {
-                clearTimeout(timer);
-                throw e;
-            }
-        }
-
-        // Odpytuje wszystkie proxy naraz i bierze pierwsze, które odpowie poprawnie
-        async function pobierzZProxy(url) {
-            const u = encodeURIComponent(url);
-            return await Promise.any([
-                fetchZTimeoutem("https://api.allorigins.win/get?url=" + u, true),
-                fetchZTimeoutem("https://api.codetabs.com/v1/proxy?quest=" + u, false),
-                fetchZTimeoutem("https://corsproxy.io/?" + u, false),
-                fetchZTimeoutem("https://thingproxy.freeboard.io/fetch/" + url, false)
-            ]);
-        }
-
         async function pobierzPlan() {
             const statusEl = document.getElementById("status");
-            const fallbackBox = document.getElementById("fallback-box");
-            statusEl.textContent = "Pobieranie najnowszego planu z USOS (max 4 sekundy)...";
-            fallbackBox.style.display = "none";
+            statusEl.textContent = "Pobieranie planu...";
 
             try {
-                const usosUrl = atob(B64_URL);
-                const icsText = await pobierzZProxy(usosUrl);
+                // Pobiera plik plan.ics bezpośrednio z Twojego repozytorium (brak blokady CORS!)
+                const res = await fetch("./plan.ics?t=" + Date.now());
+                if (!res.ok) throw new Error("Brak pliku plan.ics");
+                const icsText = await res.text();
                 
                 localStorage.setItem("usos_ics_cache", icsText);
                 localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
 
                 const zajecia = parsujICS(icsText);
                 wyswietlPlan(zajecia);
-                statusEl.textContent = `✅ Ostatnia aktualizacja: ${localStorage.getItem("usos_last_sync")}`;
+                statusEl.textContent = `✅ Zsynchronizowano: ${localStorage.getItem("usos_last_sync")}`;
             } catch (err) {
                 const cache = localStorage.getItem("usos_ics_cache");
                 if (cache) {
                     wyswietlPlan(parsujICS(cache));
-                    statusEl.textContent = `⚡ Tryb pamięci podręcznej (zapisano: ${localStorage.getItem("usos_last_sync")})`;
+                    statusEl.textContent = `⚡ Tryb offline (zapisano: ${localStorage.getItem("usos_last_sync")})`;
                 } else {
-                    statusEl.textContent = "❌ Automatyczne pobieranie zablokowane.";
+                    statusEl.textContent = "⏳ Czekam na wygenerowanie pliku plan.ics w zakładce Actions...";
                 }
-                fallbackBox.style.display = "block";
             }
         }
 
