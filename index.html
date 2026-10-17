@@ -329,7 +329,7 @@
             border-width: 2.5px;
         }
 
-        /* --- NOWY UKŁAD KARTY ZAJĘĆ (RÓWNE GODZINY, JEDNA LINIA) --- */
+        /* --- UKŁAD KARTY ZAJĘĆ (BURGER) --- */
         .event-main {
             display: flex;
             justify-content: space-between;
@@ -345,22 +345,29 @@
         .event-time-box {
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
+            align-items: center; /* Wyśrodkowane jak "burger" */
             justify-content: center;
             flex-shrink: 0;
-            text-align: right;
             border-left: 1px solid rgba(255, 255, 255, 0.1);
             padding-left: 14px;
-            white-space: nowrap; /* Zapobiega łamaniu godzin na węższych ekranach */
+            min-width: 65px; /* Zapobiega skakaniu szerokości */
         }
         .event-time-text {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.15rem;
+            font-weight: 800;
             color: var(--text);
-            line-height: 1.2;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
-        .live-event .event-time-text { color: var(--live); }
-        .next-event .event-time-text { color: var(--next); }
+        .event-time-separator {
+            font-size: 1.2rem;
+            color: var(--muted);
+            font-weight: 800;
+            margin: 4px 0;
+            line-height: 0.5;
+        }
+        .live-event .event-time-text, .live-event .event-time-separator { color: var(--live); }
+        .next-event .event-time-text, .next-event .event-time-separator { color: var(--next); }
 
         .event-top {
             display: flex;
@@ -783,7 +790,8 @@
                                 </div>
                             </div>
                             <div class="event-time-box">
-                                <div class="event-time-text">${startGodz}${endGodz ? ` - ${endGodz}` : ''}</div>
+                                <div class="event-time-text">${startGodz}</div>
+                                ${endGodz ? `<div class="event-time-separator">-</div><div class="event-time-text">${endGodz}</div>` : ''}
                             </div>
                         </div>
                         <div id="event-progress-${z._id}"></div>
