@@ -1,0 +1,867 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//MUCI//NONSGML USOS API 7.3.0.0-3\, 3949ba81 (2026-03-02)//EN
+X-ORIGINAL-URL:http://usosweb.vistula.edu.pl/kontroler.php?_action=home/pl
+ an&
+X-PUBLISHED-TTL:PT12H
+X-WR-CALNAME:Konrad Łosowski - plan zajęć USOS
+X-WR-TIMEZONE:Europe/Warsaw
+BEGIN:VEVENT
+SUMMARY:W - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20261017T080000
+DTEND;VALUE=DATE-TIME:20261017T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216574@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92920\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261017T101000
+DTEND;VALUE=DATE-TIME:20261017T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216575@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92916\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261017T123000
+DTEND;VALUE=DATE-TIME:20261017T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216576@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92917\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261017T144000
+DTEND;VALUE=DATE-TIME:20261017T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216581@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92913\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261017T165000
+DTEND;VALUE=DATE-TIME:20261017T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216586@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92912\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261017T185000
+DTEND;VALUE=DATE-TIME:20261017T204000
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216585@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92912\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20261018T080000
+DTEND;VALUE=DATE-TIME:20261018T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216573@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92920\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20261018T101000
+DTEND;VALUE=DATE-TIME:20261018T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216587@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92911\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20261018T123000
+DTEND;VALUE=DATE-TIME:20261018T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1216590@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 107\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92921\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261114T101000
+DTEND;VALUE=DATE-TIME:20261114T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230819@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92917\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261114T123000
+DTEND;VALUE=DATE-TIME:20261114T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230815@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92917\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261114T144000
+DTEND;VALUE=DATE-TIME:20261114T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230956@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92913\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20261114T165000
+DTEND;VALUE=DATE-TIME:20261114T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230925@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92911\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261114T185000
+DTEND;VALUE=DATE-TIME:20261114T204000
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230944@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92912\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20261115T080000
+DTEND;VALUE=DATE-TIME:20261115T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230879@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92918\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20261115T101000
+DTEND;VALUE=DATE-TIME:20261115T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230882@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92918\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20261115T123000
+DTEND;VALUE=DATE-TIME:20261115T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230851@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92910\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261115T144000
+DTEND;VALUE=DATE-TIME:20261115T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230800@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92916\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261115T165000
+DTEND;VALUE=DATE-TIME:20261115T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230825@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92914\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261115T185000
+DTEND;VALUE=DATE-TIME:20261115T204500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230828@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92914\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261128T080000
+DTEND;VALUE=DATE-TIME:20261128T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231003@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92922\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261128T101000
+DTEND;VALUE=DATE-TIME:20261128T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231017@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92923\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261128T123000
+DTEND;VALUE=DATE-TIME:20261128T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230832@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92915\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20261128T144000
+DTEND;VALUE=DATE-TIME:20261128T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231068@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 112\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92920\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261128T165000
+DTEND;VALUE=DATE-TIME:20261128T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230827@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92914\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261128T185000
+DTEND;VALUE=DATE-TIME:20261128T204500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230826@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92914\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261129T080000
+DTEND;VALUE=DATE-TIME:20261129T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230802@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92916\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261129T101000
+DTEND;VALUE=DATE-TIME:20261129T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230818@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92917\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261129T123000
+DTEND;VALUE=DATE-TIME:20261129T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230833@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92915\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261129T144000
+DTEND;VALUE=DATE-TIME:20261129T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230943@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92912\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261129T165000
+DTEND;VALUE=DATE-TIME:20261129T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231001@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92922\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261129T190000
+DTEND;VALUE=DATE-TIME:20261129T205500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231002@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92922\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261212T080000
+DTEND;VALUE=DATE-TIME:20261212T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230801@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92916\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20261212T101000
+DTEND;VALUE=DATE-TIME:20261212T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230816@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92917\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261212T123000
+DTEND;VALUE=DATE-TIME:20261212T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230829@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92915\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20261212T144000
+DTEND;VALUE=DATE-TIME:20261212T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230880@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92918\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20261212T165000
+DTEND;VALUE=DATE-TIME:20261212T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230853@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92910\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20261212T190000
+DTEND;VALUE=DATE-TIME:20261212T205500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230852@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92910\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261213T080000
+DTEND;VALUE=DATE-TIME:20261213T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231012@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92923\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261213T101000
+DTEND;VALUE=DATE-TIME:20261213T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231014@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92923\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20261213T123000
+DTEND;VALUE=DATE-TIME:20261213T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231081@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92919\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20261213T144000
+DTEND;VALUE=DATE-TIME:20261213T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231080@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92919\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261213T170000
+DTEND;VALUE=DATE-TIME:20261213T200000
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231004@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 114\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92922\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261219T080000
+DTEND;VALUE=DATE-TIME:20261219T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231016@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92923\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261219T101000
+DTEND;VALUE=DATE-TIME:20261219T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231011@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92923\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20261219T123000
+DTEND;VALUE=DATE-TIME:20261219T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231069@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 107\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92921\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20261219T144000
+DTEND;VALUE=DATE-TIME:20261219T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231073@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 107\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92921\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20261219T180000
+DTEND;VALUE=DATE-TIME:20261219T205500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230881@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92918\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Sztuczna inteligencja
+DTSTART;VALUE=DATE-TIME:20261220T083000
+DTEND;VALUE=DATE-TIME:20261220T111500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231013@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92923\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20261220T144000
+DTEND;VALUE=DATE-TIME:20261220T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230953@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92913\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20261220T165000
+DTEND;VALUE=DATE-TIME:20261220T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230831@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: teams\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu
+ .pl/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk
+ _id=92915\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20270116T081500
+DTEND;VALUE=DATE-TIME:20270116T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231083@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92919\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20270116T101000
+DTEND;VALUE=DATE-TIME:20270116T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231079@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92919\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Bazy danych I
+DTSTART;VALUE=DATE-TIME:20270116T121500
+DTEND;VALUE=DATE-TIME:20270116T144000
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230817@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92917\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20270116T144500
+DTEND;VALUE=DATE-TIME:20270116T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230955@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92913\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20270116T165000
+DTEND;VALUE=DATE-TIME:20270116T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231072@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 107\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92921\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20270116T184500
+DTEND;VALUE=DATE-TIME:20270116T203000
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231070@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 107\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92921\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:W - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20270117T080000
+DTEND;VALUE=DATE-TIME:20270117T095500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230854@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 114\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92910\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Języki i paradygmaty programowania
+DTSTART;VALUE=DATE-TIME:20270117T101000
+DTEND;VALUE=DATE-TIME:20270117T120500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231082@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92919\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20270117T123000
+DTEND;VALUE=DATE-TIME:20270117T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230921@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92911\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Podstawy programowania stron internetowych
+DTSTART;VALUE=DATE-TIME:20270123T113000
+DTEND;VALUE=DATE-TIME:20270123T142500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230830@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 105\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92915\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20270123T144000
+DTEND;VALUE=DATE-TIME:20270123T163500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230920@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92911\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20270123T165000
+DTEND;VALUE=DATE-TIME:20270123T184500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230922@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92911\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technologie sieciowe
+DTSTART;VALUE=DATE-TIME:20270124T094500
+DTEND;VALUE=DATE-TIME:20270124T124500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230954@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92913\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Systemy operacyjne
+DTSTART;VALUE=DATE-TIME:20270124T130000
+DTEND;VALUE=DATE-TIME:20270124T135500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1230923@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 108\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92911\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Lab - Technika i architektura systemów cyforwych
+DTSTART;VALUE=DATE-TIME:20270124T140000
+DTEND;VALUE=DATE-TIME:20270124T144500
+DTSTAMP;VALUE=DATE-TIME:20261017T163007Z
+UID:sm-1231071@usosapps.vistula.edu.pl
+DESCRIPTION:Sala: 107\nAFiBV Filia Olsztyn\n\nhttp://usosweb.vistula.edu.p
+ l/kontroler.php?_action=katalog2/przedmioty/pokazZajecia&gr_nr=1&zaj_cyk_i
+ d=92921\n
+LOCATION:Jagiellońska 59\, 10-283 OLSZTYN\, Polska
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
