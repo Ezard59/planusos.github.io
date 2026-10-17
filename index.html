@@ -100,6 +100,34 @@
             margin-bottom: 14px;
         }
 
+        /* Pasek nawigacji miesięcy */
+        .month-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+        }
+        .month-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: capitalize;
+        }
+        .month-btn {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+        .month-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
+        }
+
         /* Legenda typów zajęć */
         .legend {
             display: flex;
@@ -126,7 +154,7 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: none;
             flex-direction: column;
             gap: 8px;
@@ -149,7 +177,7 @@
 
         /* Dni i kafelki */
         .day-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding: 4px;
             border-radius: 12px;
         }
@@ -159,9 +187,9 @@
             padding: 14px;
         }
         .day-header {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: var(--accent);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 600;
             text-transform: capitalize;
             display: flex;
@@ -343,14 +371,21 @@
 
         <div id="status" class="status">Ładowanie planu...</div>
 
+        <!-- Górny panel na żywo (zawsze widoczny niezależnie od miesiąca) -->
+        <div id="hero-banner" class="hero-banner"></div>
+
+        <!-- Przełącznik miesięcy -->
+        <div class="month-nav">
+            <button type="button" class="month-btn" onclick="zmienMiesiac(-1)">◀ Poprzedni</button>
+            <div id="current-month-title" class="month-title">Ładowanie...</div>
+            <button type="button" class="month-btn" onclick="zmienMiesiac(1)">Następny ▶</button>
+        </div>
+
         <div class="legend">
             <div class="legend-item"><span class="legend-dot" style="background: var(--type-w)"></span> Wykład</div>
             <div class="legend-item"><span class="legend-dot" style="background: var(--type-lab)"></span> Laboratorium</div>
             <div class="legend-item"><span class="legend-dot" style="background: var(--type-cw)"></span> Ćwiczenia</div>
         </div>
-
-        <!-- Górny panel na żywo -->
-        <div id="hero-banner" class="hero-banner"></div>
 
         <div id="plan-container"></div>
     </div>
@@ -358,6 +393,8 @@
     <script>
         const STORAGE_AUTH_KEY = "usos_logged_in_v3";
         let WSZYSTKIE_ZAJECIA = [];
+        let dostepneMiesiace = []; // Lista kluczy np. ["2026-10", "2026-11"]
+        let aktualnyIndeksMiesiaca = 0;
         let timerInterval = null;
 
         function sprawdzHaslo(wpisane) {
@@ -368,8 +405,9 @@
             const input = document.getElementById("pass-input").value;
             const errorEl = document.getElementById("login-error");
 
+            errorEl.style.display = "none";
+
             if (sprawdzHaslo(input)) {
-                errorEl.style.display = "none";
                 localStorage.setItem(STORAGE_AUTH_KEY, "true");
                 uruchomAplikacje();
             } else {
@@ -392,6 +430,7 @@
             const zapisany = localStorage.getItem("usos_ics_cache");
             if (zapisany) {
                 WSZYSTKIE_ZAJECIA = parsujICS(zapisany);
+                inicjalizujMiesiace();
                 wyswietlPlan();
             }
             pobierzPlan();
@@ -414,31 +453,15 @@
             const s = (rawSummary || "").trim();
 
             if (/^(W|Wyk|Wykład)\s*[-–:]/i.test(s)) {
-                return {
-                    kod: 'w',
-                    etykieta: '📖 Wykład',
-                    czystaNazwa: s.replace(/^(W|Wyk|Wykład)\s*[-–:]\s*/i, '')
-                };
+                return { kod: 'w', etykieta: '📖 Wykład', czystaNazwa: s.replace(/^(W|Wyk|Wykład)\s*[-–:]\s*/i, '') };
             }
             if (/^(Lab|Laboratorium)\s*[-–:]/i.test(s)) {
-                return {
-                    kod: 'lab',
-                    etykieta: '🔬 Laboratorium',
-                    czystaNazwa: s.replace(/^(Lab|Laboratorium)\s*[-–:]\s*/i, '')
-                };
+                return { kod: 'lab', etykieta: '🔬 Laboratorium', czystaNazwa: s.replace(/^(Lab|Laboratorium)\s*[-–:]\s*/i, '') };
             }
             if (/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]/i.test(s)) {
-                return {
-                    kod: 'cw',
-                    etykieta: '✏️ Ćwiczenia',
-                    czystaNazwa: s.replace(/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]\s*/i, '')
-                };
+                return { kod: 'cw', etykieta: '✏️ Ćwiczenia', czystaNazwa: s.replace(/^(Ćw|Cw|Ć|C|Ćwiczenia|Konw|Proj)\s*[-–:]\s*/i, '') };
             }
-            return {
-                kod: 'inne',
-                etykieta: '🎓 Zajęcia',
-                czystaNazwa: s
-            };
+            return { kod: 'inne', etykieta: '🎓 Zajęcia', czystaNazwa: s };
         }
 
         function wyciagnijSale(rawDescription, rawLocation) {
@@ -446,29 +469,16 @@
             const matchSala = tekst.match(/Sala:\s*([^|\n\r]+)/i);
             let sala = matchSala ? matchSala[1].trim() : "";
 
-            if (!sala && /teams|zdaln|online/i.test(tekst)) {
-                sala = "Teams";
-            }
-
-            if (!sala) {
-                return { tekst: "📍 Brak sali", zdalnie: false };
-            }
-
-            if (/teams|zdaln|online/i.test(sala)) {
-                return { tekst: "💻 ZDALNIE (Teams)", zdalnie: true };
-            }
-
+            if (!sala && /teams|zdaln|online/i.test(tekst)) sala = "Teams";
+            if (!sala) return { tekst: "📍 Brak sali", zdalnie: false };
+            if (/teams|zdaln|online/i.test(sala)) return { tekst: "💻 ZDALNIE (Teams)", zdalnie: true };
             return { tekst: `📍 Sala ${sala}`, zdalnie: false };
         }
 
         function wyciagnijProwadzacego(rawDescription) {
             if (!rawDescription) return "";
-            // Szukamy np. "Prowadzący: dr Jan Kowalski" lub "Prowadzący: prof. hab. ..."
             const match = rawDescription.match(/Prowadzący:\s*([^|\n\r]+)/i);
-            if (match) {
-                return match[1].trim();
-            }
-            return "";
+            return match ? match[1].trim() : "";
         }
 
         function parsujICS(icsText) {
@@ -493,25 +503,51 @@
                         obecne.czyZdalnie = salaInfo.zdalnie;
 
                         obecne.prowadzacy = wyciagnijProwadzacego(obecne.description);
-
                         zajecia.push(obecne);
                     }
                     obecne = null;
                 } else if (obecne) {
-                    if (line.startsWith("SUMMARY:")) {
-                        obecne.summary = line.substring(8).replace(/\\,/g, ',');
-                    } else if (line.startsWith("LOCATION:")) {
-                        obecne.location = line.substring(9).replace(/\\,/g, ',');
-                    } else if (line.startsWith("DESCRIPTION:")) {
-                        obecne.description = line.substring(12).replace(/\\n/g, ' | ').replace(/\\,/g, ',');
-                    } else if (line.startsWith("DTSTART")) {
-                        obecne.start = parsujDateICal(line);
-                    } else if (line.startsWith("DTEND")) {
-                        obecne.end = parsujDateICal(line);
-                    }
+                    if (line.startsWith("SUMMARY:")) obecne.summary = line.substring(8).replace(/\\,/g, ',');
+                    else if (line.startsWith("LOCATION:")) obecne.location = line.substring(9).replace(/\\,/g, ',');
+                    else if (line.startsWith("DESCRIPTION:")) obecne.description = line.substring(12).replace(/\\n/g, ' | ').replace(/\\,/g, ',');
+                    else if (line.startsWith("DTSTART")) obecne.start = parsujDateICal(line);
+                    else if (line.startsWith("DTEND")) obecne.end = parsujDateICal(line);
                 }
             }
             return zajecia.sort((a, b) => a.start - b.start);
+        }
+
+        function inicjalizujMiesiace() {
+            const zestawMiesiecy = new Set();
+            WSZYSTKIE_ZAJECIA.forEach(z => {
+                const rok = z.start.getFullYear();
+                const miesiac = String(z.start.getMonth() + 1).padStart(2, '0');
+                zetawMiesiecy.add(`${rok}-${miesiac}`);
+            });
+            dostepneMiesiace = Array.from(zetawMiesiecy).sort();
+
+            // Znajdź domyślny miesiąc (bieżący lub najbliższy przyszły)
+            const teraz = new Date();
+            const rokTeraz = teraz.getFullYear();
+            const miesiacTeraz = String(teraz.getMonth() + 1).padStart(2, '0');
+            const kluczBiezacy = `${rokTeraz}-${miesiacTeraz}`;
+
+            const znalezionyIndeks = dostepneMiesiace.indexOf(kluczBiezacy);
+            if (znalezionyIndeks !== -1) {
+                aktualnyIndeksMiesiaca = znalezionyIndeks;
+            } else {
+                // Jeśli w bieżącym miesiącu nie ma zajęć, znajdź pierwszy nadchodzący
+                const przyszlyIndeks = dostepneMiesiace.findIndex(m => m > kluczBiezacy);
+                aktualnyIndeksMiesiaca = przyszlyIndeks !== -1 ? przyszlyIndeks : (dostepneMiesiace.length > 0 ? 0 : -1);
+            }
+        }
+
+        function zmienMiesiac(kierunek) {
+            if (dostepneMiesiace.length === 0) return;
+            aktualnyIndeksMiesiaca += kierunek;
+            if (aktualnyIndeksMiesiaca < 0) aktualnyIndeksMiesiaca = dostepneMiesiace.length - 1;
+            if (aktualnyIndeksMiesiaca >= dostepneMiesiace.length) aktualnyIndeksMiesiaca = 0;
+            wyswietlPlan();
         }
 
         function czyTenSamDzien(d1, d2) {
@@ -536,18 +572,39 @@
 
         function wyswietlPlan() {
             const container = document.getElementById("plan-container");
+            const titleEl = document.getElementById("current-month-title");
             container.innerHTML = "";
             const teraz = new Date();
 
-            if (WSZYSTKIE_ZAJECIA.length === 0) {
+            if (WSZYSTKIE_ZAJECIA.length === 0 || dostepneMiesiace.length === 0) {
+                titleEl.textContent = "Brak miesięcy";
                 container.innerHTML = "<p style='color:var(--muted);'>Brak nadchodzących zajęć w pliku plan.ics.</p>";
                 document.getElementById("hero-banner").style.display = "none";
                 return;
             }
 
+            const wybraneKluczMiesiaca = dostepneMiesiace[aktualnyIndeksMiesiaca];
+            const [rokStr, miesStr] = wybraneKluczMiesiaca.split('-');
+            const dataMiesiacaRef = new Date(parseInt(rokStr), parseInt(miesStr) - 1, 1);
+            
+            const nazwaMiesiacaTekst = dataMiesiacaRef.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
+            titleEl.textContent = nazwaMiesiacaTekst;
+
+            // Filtruj zajęcia tylko dla wybranego miesiąca
+            const zajeciaWpisuMiesiaca = WSZYSTKIE_ZAJECIA.filter(z => {
+                const zRok = z.start.getFullYear();
+                const zMies = String(z.start.getMonth() + 1).padStart(2, '0');
+                return `${zRok}-${zMies}` === wybraneKluczMiesiaca;
+            });
+
+            if (zajeciaWpisuMiesiaca.length === 0) {
+                container.innerHTML = "<p style='color:var(--muted);'>Brak zajęć w tym miesiącu.</p>";
+                aktualizujLicznikiNaZywo();
+                return;
+            }
+
             const grupy = new Map();
-            WSZYSTKIE_ZAJECIA.forEach((z, idx) => {
-                z._id = idx;
+            zajeciaWpisuMiesiaca.forEach((z, idx) => {
                 const kluczDnia = z.start.toLocaleDateString('pl-PL', {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                 });
@@ -605,44 +662,49 @@
             let trwajace = null;
             let nastepne = null;
 
-            WSZYSTKIE_ZAJECIA.forEach(z => {
+            WSZYSTKIE_ZAJECIA.forEach((z, idx) => {
+                z._id = idx; // Przypisz unikalne id do śledzenia w całej liście
                 const card = document.getElementById(`event-card-${z._id}`);
                 const badgeBox = document.getElementById(`event-badge-${z._id}`);
                 const progressBox = document.getElementById(`event-progress-${z._id}`);
-                if (!card) return;
 
-                card.classList.remove("past-event", "live-event", "next-event");
-                badgeBox.innerHTML = "";
-                progressBox.innerHTML = "";
+                if (card && badgeBox && progressBox) {
+                    card.classList.remove("past-event", "live-event", "next-event");
+                    badgeBox.innerHTML = "";
+                    progressBox.innerHTML = "";
 
-                if (z.end && teraz >= z.end) {
-                    card.classList.add("past-event");
-                } else if (z.end && teraz >= z.start && teraz < z.end) {
-                    trwajace = z;
-                    card.classList.add("live-event");
-                    badgeBox.innerHTML = `<span class="badge badge-live">Trwa teraz</span>`;
+                    if (z.end && teraz >= z.end) {
+                        card.classList.add("past-event");
+                    } else if (z.end && teraz >= z.start && teraz < z.end) {
+                        trwajace = z;
+                        card.classList.add("live-event");
+                        badgeBox.innerHTML = `<span class="badge badge-live">Trwa teraz</span>`;
 
-                    const calkowityCzas = z.end - z.start;
-                    const minelo = teraz - z.start;
-                    const procent = Math.min(100, Math.max(0, Math.round((minelo / calkowityCzas) * 100)));
-                    const doKonca = formatujOdliczanie(z.end - teraz);
+                        const calkowityCzas = z.end - z.start;
+                        const minelo = teraz - z.start;
+                        const procent = Math.min(100, Math.max(0, Math.round((minelo / calkowityCzas) * 100)));
+                        const doKonca = formatujOdliczanie(z.end - teraz);
 
-                    progressBox.innerHTML = `
-                        <div class="progress-wrap">
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" style="width: ${procent}%"></div>
+                        progressBox.innerHTML = `
+                            <div class="progress-wrap">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: ${procent}%"></div>
+                                </div>
+                                <div class="progress-info">
+                                    <span>Postęp: ${procent}%</span>
+                                    <span>Koniec za: ${doKonca}</span>
+                                </div>
                             </div>
-                            <div class="progress-info">
-                                <span>Postęp: ${procent}%</span>
-                                <span>Koniec za: ${doKonca}</span>
-                            </div>
-                        </div>
-                    `;
-                } else if (teraz < z.start && !nastepne) {
+                        `;
+                    }
+                }
+
+                if (teraz < z.start && !nastepne) {
                     nastepne = z;
                 }
             });
 
+            // Podświetl następne zajęcia na aktualnie wyświetlanej karcie (jeśli jest w tym miesiącu)
             if (nastepne) {
                 const nextCard = document.getElementById(`event-card-${nastepne._id}`);
                 const nextBadge = document.getElementById(`event-badge-${nastepne._id}`);
@@ -690,12 +752,14 @@
                 localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
 
                 WSZYSTKIE_ZAJECIA = parsujICS(icsText);
+                inicjalizujMiesiace();
                 wyswietlPlan();
                 statusEl.textContent = `✅ Zsynchronizowano: ${localStorage.getItem("usos_last_sync")}`;
             } catch (err) {
                 const cache = localStorage.getItem("usos_ics_cache");
                 if (cache) {
                     WSZYSTKIE_ZAJECIA = parsujICS(cache);
+                    inicjalizujMiesiace();
                     wyswietlPlan();
                     statusEl.textContent = `⚡ Tryb offline (zapisano: ${localStorage.getItem("usos_last_sync")})`;
                 } else {
