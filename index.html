@@ -77,6 +77,32 @@
             }
         }
 
+        /* --- ANIMACJE PRZESUWANIA (SWIPE) --- */
+        @keyframes slideOutLeft {
+            to { transform: translateX(-40px); opacity: 0; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(40px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            to { transform: translateX(40px); opacity: 0; }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-40px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .slide-out-next { animation: slideOutLeft 0.2s forwards ease-in-out; }
+        .slide-in-next { animation: slideInRight 0.2s forwards ease-in-out; }
+        .slide-out-prev { animation: slideOutRight 0.2s forwards ease-in-out; }
+        .slide-in-prev { animation: slideInLeft 0.2s forwards ease-in-out; }
+
+        /* Kontenery, które będą animowane */
+        #plan-container, #current-month-title {
+            will-change: transform, opacity;
+        }
+
         #login-screen {
             display: flex;
             flex-direction: column;
@@ -156,12 +182,14 @@
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 16px;
+            overflow: hidden; /* Żeby tytuł nie wystawał przy animacji */
         }
         .month-title {
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--accent);
             text-transform: capitalize;
+            display: inline-block;
         }
 
         .legend {
@@ -432,6 +460,7 @@
         let dostepneMiesiace = [];
         let aktualnyIndeksMiesiaca = 0;
         let timerInterval = null;
+        let isAnimating = false; // Blokada wielu kliknięć na raz
 
         function sprawdzHaslo(wpisane) {
             return wpisane && wpisane.trim().toLowerCase() === "lol123";
@@ -558,12 +587,48 @@
             }
         }
 
+        // --- ZMODYFIKOWANA FUNKCJA ZMIANY MIESIĄCA (Z ANIMACJĄ) ---
         function zmienMiesiac(kierunek) {
-            if (dostepneMiesiace.length === 0) return;
-            aktualnyIndeksMiesiaca += kierunek;
-            if (aktualnyIndeksMiesiaca < 0) aktualnyIndeksMiesiaca = dostepneMiesiace.length - 1;
-            if (aktualnyIndeksMiesiaca >= dostepneMiesiace.length) aktualnyIndeksMiesiaca = 0;
-            wyswietlPlan();
+            if (dostepneMiesiace.length === 0 || isAnimating) return;
+            isAnimating = true;
+
+            const planContainer = document.getElementById("plan-container");
+            const titleEl = document.getElementById("current-month-title");
+
+            // Określamy klasy na podstawie kierunku przesuwania
+            const outClass = kierunek > 0 ? "slide-out-next" : "slide-out-prev";
+            const inClass = kierunek > 0 ? "slide-in-next" : "slide-in-prev";
+
+            // Rozpoczynamy animację wyjścia
+            planContainer.classList.add(outClass);
+            titleEl.classList.add(outClass);
+
+            // Czekamy aż stary zawartość zniknie
+            setTimeout(() => {
+                // Zmieniamy indeks po wygaśnięciu animacji out
+                aktualnyIndeksMiesiaca += kierunek;
+                if (aktualnyIndeksMiesiaca < 0) aktualnyIndeksMiesiaca = dostepneMiesiace.length - 1;
+                if (aktualnyIndeksMiesiaca >= dostepneMiesiace.length) aktualnyIndeksMiesiaca = 0;
+                
+                // Renderujemy nowy plan na nowo
+                wyswietlPlan();
+
+                // Zdejmujemy starą klasę, przygotowujemy do wejścia
+                planContainer.classList.remove(outClass);
+                titleEl.classList.remove(outClass);
+                
+                // Uruchamiamy animację wejścia
+                planContainer.classList.add(inClass);
+                titleEl.classList.add(inClass);
+
+                // Usuwamy klasę in i zdejmujemy blokadę po zakończeniu
+                setTimeout(() => {
+                    planContainer.classList.remove(inClass);
+                    titleEl.classList.remove(inClass);
+                    isAnimating = false;
+                }, 200);
+
+            }, 200); // 200ms zgrywa się z regułami CSS
         }
 
         function czyTenSamDzien(d1, d2) {
@@ -771,7 +836,7 @@
             handleGesture();
         }, { passive: true });
 
-        // Obsługa myszki (komputery) - teraz powinno działać pewniej
+        // Obsługa myszki (komputery)
         appScreen.addEventListener('mousedown', e => {
             isMouseDown = true;
             startX = e.clientX;
