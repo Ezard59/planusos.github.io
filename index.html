@@ -329,7 +329,7 @@
             border-width: 2.5px;
         }
 
-        /* --- NOWY UKŁAD KARTY ZAJĘĆ (RÓWNE GODZINY) --- */
+        /* --- NOWY UKŁAD KARTY ZAJĘĆ (RÓWNE GODZINY, JEDNA LINIA) --- */
         .event-main {
             display: flex;
             justify-content: space-between;
@@ -351,16 +351,13 @@
             text-align: right;
             border-left: 1px solid rgba(255, 255, 255, 0.1);
             padding-left: 14px;
+            white-space: nowrap; /* Zapobiega łamaniu godzin na węższych ekranach */
         }
         .event-time-text {
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--text);
             line-height: 1.2;
-        }
-        .event-time-text.end-time {
-            color: var(--muted);
-            margin-top: 2px;
         }
         .live-event .event-time-text { color: var(--live); }
         .next-event .event-time-text { color: var(--next); }
@@ -491,9 +488,6 @@
         let timerInterval = null;
         let isAnimating = false;
 
-        // ==========================================
-        // SŁOWNIK WYKŁADOWCÓW 
-        // ==========================================
         const PRZYPISANI_WYKLADOWCY = {
             "Bazy danych I": {
                 w: "Mirosław Lisiecki",
@@ -789,8 +783,7 @@
                                 </div>
                             </div>
                             <div class="event-time-box">
-                                <div class="event-time-text">${startGodz}</div>
-                                ${endGodz ? `<div class="event-time-text end-time">${endGodz}</div>` : ''}
+                                <div class="event-time-text">${startGodz}${endGodz ? ` - ${endGodz}` : ''}</div>
                             </div>
                         </div>
                         <div id="event-progress-${z._id}"></div>
