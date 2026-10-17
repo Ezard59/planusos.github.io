@@ -328,26 +328,51 @@
             border-color: var(--next) !important;
             border-width: 2.5px;
         }
-        .event-top {
+
+        /* --- NOWY UKŁAD KARTY ZAJĘĆ --- */
+        .event-main {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 12px;
         }
-        .event-top-left {
+        .event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+        .event-time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            flex-shrink: 0;
+            text-align: right;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding-left: 14px;
+        }
+        .event-time-start {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text);
+            line-height: 1;
+        }
+        .live-event .event-time-start { color: var(--live); }
+        .next-event .event-time-start { color: var(--next); }
+        .event-time-end {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        .event-top {
             display: flex;
             align-items: center;
             gap: 8px;
             flex-wrap: wrap;
         }
-        .event-time {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .live-event .event-time { color: var(--live); }
-        .next-event .event-time { color: var(--next); }
         .event-title {
             font-size: 1.08rem;
             font-weight: 700;
@@ -432,7 +457,6 @@
 
     <div id="app-screen">
         
-        <!-- Pływające przyciski nawigacyjne po bokach (ukryte na mobilkach) -->
         <div class="side-nav left" onclick="zmienMiesiac(-1)">◀</div>
         <div class="side-nav right" onclick="zmienMiesiac(1)">▶</div>
 
@@ -446,10 +470,8 @@
 
         <div id="status" class="status">Ładowanie planu...</div>
 
-        <!-- Górny panel na żywo -->
         <div id="hero-banner" class="hero-banner"></div>
 
-        <!-- Pasek nawigacji - czysty, wyśrodkowany i przyklejony! -->
         <div class="month-nav">
             <div id="current-month-title" class="month-title">Wczytywanie...</div>
         </div>
@@ -471,44 +493,40 @@
         let timerInterval = null;
         let isAnimating = false;
 
-        // ==========================================
-        // SŁOWNIK WYKŁADOWCÓW Z USOS
-        // Możesz uzupełniać imionami i nazwiskami prowadzących.
-        // ==========================================
         const PRZYPISANI_WYKLADOWCY = {
             "Bazy danych I": {
-                w: "Mirosław Lisiecki",
-                lab: "Mirosław Lisiecki",
+                w: "",
+                lab: "",
                 cw: ""
             },
             "Języki i paradygmaty programowania": {
-                w: "Marcin Gabryel",
-                lab: "Marcin Gabryel",
+                w: "",
+                lab: "",
                 cw: ""
             },
             "Podstawy programowania stron internetowych": {
-                w: "Jakub Sitek",
-                lab: "Jakub Sitek",
+                w: "",
+                lab: "",
                 cw: ""
             },
             "Systemy operacyjne": {
-                w: "Marcin Gabryel",
-                lab: "Grzegorz Olech",
+                w: "",
+                lab: "",
                 cw: ""
             },
             "Sztuczna inteligencja": {
-                w: "Marcin Korytkowski",
-                lab: "Marcin Korytkowski",
+                w: "",
+                lab: "",
                 cw: ""
             },
-            "Technika i architektura systemów cyforwych": {
-                w: "Karol Krupa",
-                lab: "Karol Krupa",
+            "Technika i architektura systemów cyfrowych": {
+                w: "",
+                lab: "",
                 cw: ""
             },
             "Technologie sieciowe": {
-                w: "Grzegorz Olech",
-                lab: "Grzegorz Olech",
+                w: "",
+                lab: "",
                 cw: ""
             }
         };
@@ -597,7 +615,6 @@
                     }
                 }
             }
-
             if (!rawDescription) return "";
             const match = rawDescription.match(/(?:Prowadzący|Nauczyciel|Wykładowca):\s*([^|\n\r]+)/i);
             return match ? match[1].trim() : "";
@@ -758,17 +775,22 @@
                     card.className = `event-card card-${z.typKod}`;
                     card.id = `event-card-${z._id}`;
                     card.innerHTML = `
-                        <div class="event-top">
-                            <div class="event-top-left">
-                                <span class="event-time">🕒 ${startGodz} - ${endGodz}</span>
-                                <span class="type-badge type-${z.typKod}">${z.typEtykieta}</span>
+                        <div class="event-main">
+                            <div class="event-details">
+                                <div class="event-top">
+                                    <span class="type-badge type-${z.typKod}">${z.typEtykieta}</span>
+                                    <div id="event-badge-${z._id}"></div>
+                                </div>
+                                <div class="event-title">${z.czystaNazwa}</div>
+                                <div class="event-meta">
+                                    <span class="room-pill ${z.czyZdalnie ? 'is-remote' : ''}">${z.salaTekst}</span>
+                                    ${z.prowadzacy ? `<span class="teacher-pill">👨‍🏫 ${z.prowadzacy}</span>` : ''}
+                                </div>
                             </div>
-                            <div id="event-badge-${z._id}"></div>
-                        </div>
-                        <div class="event-title">${z.czystaNazwa}</div>
-                        <div class="event-meta">
-                            <span class="room-pill ${z.czyZdalnie ? 'is-remote' : ''}">${z.salaTekst}</span>
-                            ${z.prowadzacy ? `<span class="teacher-pill">👨‍🏫 ${z.prowadzacy}</span>` : ''}
+                            <div class="event-time-box">
+                                <div class="event-time-start">${startGodz}</div>
+                                ${endGodz ? `<div class="event-time-end">do ${endGodz}</div>` : ''}
+                            </div>
                         </div>
                         <div id="event-progress-${z._id}"></div>
                     `;
