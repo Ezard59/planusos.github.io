@@ -11,6 +11,8 @@
             --text: #f8fafc;
             --muted: #94a3b8;
             --accent: #38bdf8;
+            --live: #22c55e;
+            --next: #f59e0b;
             --danger: #ef4444;
             --border: #334155;
         }
@@ -64,7 +66,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
         }
@@ -87,18 +89,76 @@
         }
         button:active { opacity: 0.8; }
         .status {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--muted);
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
-        .day-group { margin-bottom: 24px; }
+
+        /* Baner odliczania na górze */
+        .hero-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+        .hero-banner.is-live { border-color: var(--live); }
+        .hero-banner.is-next { border-color: var(--next); }
+        .hero-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+        }
+        .hero-title { font-size: 1.15rem; font-weight: 700; }
+        .hero-timer {
+            font-size: 1.35rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Dni i kafelki */
+        .day-group {
+            margin-bottom: 24px;
+            padding: 4px;
+            border-radius: 12px;
+        }
+        .day-group.today-group {
+            background: rgba(56, 189, 248, 0.04);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 14px;
+        }
         .day-header {
             font-size: 1.1rem;
             color: var(--accent);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-weight: 600;
             text-transform: capitalize;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        .badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-today { background: var(--accent); color: #0f172a; }
+        .badge-live { background: var(--live); color: #052e16; animation: pulse 2s infinite; }
+        .badge-next { background: var(--next); color: #451a03; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.65; }
+        }
+
         .event-card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -109,12 +169,35 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            transition: opacity 0.2s;
+        }
+        .event-card.past-event {
+            opacity: 0.45;
+            border-left-color: var(--muted);
+        }
+        .event-card.live-event {
+            border-color: var(--live);
+            border-left-width: 6px;
+            background: rgba(34, 197, 94, 0.08);
+        }
+        .event-card.next-event {
+            border-color: var(--next);
+            border-left-width: 6px;
+        }
+        .event-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .event-time {
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--accent);
         }
+        .live-event .event-time { color: var(--live); }
+        .next-event .event-time { color: var(--next); }
         .event-title {
             font-size: 1.05rem;
             font-weight: 600;
@@ -125,6 +208,35 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
+        }
+
+        /* Pasek postępu */
+        .progress-wrap {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--live);
+            border-radius: 999px;
+            transition: width 1s linear;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--live);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
         }
     </style>
 </head>
@@ -150,11 +262,17 @@
         </header>
 
         <div id="status" class="status">Ładowanie planu...</div>
+
+        <!-- Górny panel na żywo -->
+        <div id="hero-banner" class="hero-banner"></div>
+
         <div id="plan-container"></div>
     </div>
 
     <script>
         const STORAGE_AUTH_KEY = "usos_logged_in_v3";
+        let WSZYSTKIE_ZAJECIA = [];
+        let timerInterval = null;
 
         function sprawdzHaslo(wpisane) {
             return wpisane && wpisane.trim().toLowerCase() === "lol123";
@@ -175,6 +293,7 @@
 
         function wyloguj() {
             localStorage.removeItem(STORAGE_AUTH_KEY);
+            if (timerInterval) clearInterval(timerInterval);
             document.getElementById("pass-input").value = "";
             document.getElementById("app-screen").style.display = "none";
             document.getElementById("login-screen").style.display = "flex";
@@ -186,9 +305,13 @@
 
             const zapisany = localStorage.getItem("usos_ics_cache");
             if (zapisany) {
-                wyswietlPlan(parsujICS(zapisany));
+                WSZYSTKIE_ZAJECIA = parsujICS(zapisany);
+                wyswietlPlan();
             }
             pobierzPlan();
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(aktualizujLicznikiNaZywo, 1000);
         }
 
         function parsujDateICal(icalStr) {
@@ -233,47 +356,166 @@
             return zajecia.sort((a, b) => a.start - b.start);
         }
 
-        function wyswietlPlan(zajecia) {
+        function czyTenSamDzien(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getDate() === d2.getDate();
+        }
+
+        function formatujOdliczanie(ms) {
+            if (ms <= 0) return "0s";
+            const sek = Math.floor(ms / 1000) % 60;
+            const min = Math.floor(ms / 60000) % 60;
+            const godz = Math.floor(ms / 3600000) % 24;
+            const dni = Math.floor(ms / 86400000);
+
+            const czesci = [];
+            if (dni > 0) czesci.push(`${dni}d`);
+            if (godz > 0 || dni > 0) czesci.push(`${godz}h`);
+            czesci.push(`${min}m ${sek < 10 ? '0' + sek : sek}s`);
+            return czesci.join(" ");
+        }
+
+        function wyswietlPlan() {
             const container = document.getElementById("plan-container");
             container.innerHTML = "";
+            const teraz = new Date();
 
-            if (zajecia.length === 0) {
+            if (WSZYSTKIE_ZAJECIA.length === 0) {
                 container.innerHTML = "<p style='color:var(--muted);'>Brak nadchodzących zajęć w pliku plan.ics.</p>";
+                document.getElementById("hero-banner").style.display = "none";
                 return;
             }
 
-            const grupy = {};
-            zajecia.forEach(z => {
+            // Grupowanie zajęć po dniach
+            const grupy = new Map();
+            WSZYSTKIE_ZAJECIA.forEach((z, idx) => {
+                z._id = idx;
                 const kluczDnia = z.start.toLocaleDateString('pl-PL', {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                 });
-                if (!grupy[kluczDnia]) grupy[kluczDnia] = [];
-                grupy[kluczDnia].push(z);
+                if (!grupy.has(kluczDnia)) {
+                    grupy.set(kluczDnia, { data: z.start, lista: [] });
+                }
+                grupy.get(kluczDnia).lista.push(z);
             });
 
-            for (const [dzien, lista] of Object.entries(grupy)) {
+            for (const [dzienTekst, grupa] of grupy.entries()) {
+                const dzisiaj = czyTenSamDzien(grupa.data, teraz);
                 const dayDiv = document.createElement("div");
-                dayDiv.className = "day-group";
-                dayDiv.innerHTML = `<div class="day-header">${dzien}</div>`;
+                dayDiv.className = "day-group" + (dzisiaj ? " today-group" : "");
+                dayDiv.innerHTML = `
+                    <div class="day-header">
+                        <span>${dzienTekst}</span>
+                        ${dzisiaj ? '<span class="badge badge-today">Dzisiaj</span>' : ''}
+                    </div>
+                `;
 
-                lista.forEach(z => {
+                grupa.lista.forEach(z => {
                     const startGodz = z.start.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
                     const endGodz = z.end ? z.end.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }) : "";
                     
                     const card = document.createElement("div");
                     card.className = "event-card";
+                    card.id = `event-card-${z._id}`;
                     card.innerHTML = `
-                        <div class="event-time">🕒 ${startGodz} - ${endGodz}</div>
+                        <div class="event-top">
+                            <div class="event-time">🕒 ${startGodz} - ${endGodz}</div>
+                            <div id="event-badge-${z._id}"></div>
+                        </div>
                         <div class="event-title">${z.summary}</div>
                         <div class="event-meta">
                             <span>📍 ${z.location || 'Brak sali'}</span>
                             ${z.description ? `<span>ℹ️ ${z.description}</span>` : ''}
                         </div>
+                        <div id="event-progress-${z._id}"></div>
                     `;
                     dayDiv.appendChild(card);
                 });
 
                 container.appendChild(dayDiv);
+            }
+
+            aktualizujLicznikiNaZywo();
+        }
+
+        function aktualizujLicznikiNaZywo() {
+            if (WSZYSTKIE_ZAJECIA.length === 0) return;
+            const teraz = new Date();
+            let trwajace = null;
+            let nastepne = null;
+
+            WSZYSTKIE_ZAJECIA.forEach(z => {
+                const card = document.getElementById(`event-card-${z._id}`);
+                const badgeBox = document.getElementById(`event-badge-${z._id}`);
+                const progressBox = document.getElementById(`event-progress-${z._id}`);
+                if (!card) return;
+
+                card.classList.remove("past-event", "live-event", "next-event");
+                badgeBox.innerHTML = "";
+                progressBox.innerHTML = "";
+
+                if (z.end && teraz >= z.end) {
+                    card.classList.add("past-event");
+                } else if (z.end && teraz >= z.start && teraz < z.end) {
+                    trwajace = z;
+                    card.classList.add("live-event");
+                    badgeBox.innerHTML = `<span class="badge badge-live">Trwa teraz</span>`;
+
+                    const calkowityCzas = z.end - z.start;
+                    const minelo = teraz - z.start;
+                    const procent = Math.min(100, Math.max(0, Math.round((minelo / calkowityCzas) * 100)));
+                    const doKonca = formatujOdliczanie(z.end - teraz);
+
+                    progressBox.innerHTML = `
+                        <div class="progress-wrap">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: ${procent}%"></div>
+                            </div>
+                            <div class="progress-info">
+                                <span>Postęp: ${procent}%</span>
+                                <span>Koniec za: ${doKonca}</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (teraz < z.start && !nastepne) {
+                    nastepne = z;
+                }
+            });
+
+            // Oznacz pierwsze nadchodzące zajęcia
+            if (nastepne) {
+                const nextCard = document.getElementById(`event-card-${nastepne._id}`);
+                const nextBadge = document.getElementById(`event-badge-${nastepne._id}`);
+                if (nextCard && nextBadge) {
+                    nextCard.classList.add("next-event");
+                    nextBadge.innerHTML = `<span class="badge badge-next">Start za ${formatujOdliczanie(nastepne.start - teraz)}</span>`;
+                }
+            }
+
+            // Aktualizacja górnego banera
+            const hero = document.getElementById("hero-banner");
+            if (trwajace) {
+                const calkowity = trwajace.end - trwajace.start;
+                const procent = Math.min(100, Math.max(0, Math.round(((teraz - trwajace.start) / calkowity) * 100)));
+                hero.style.display = "flex";
+                hero.className = "hero-banner is-live";
+                hero.innerHTML = `
+                    <div class="hero-label" style="color: var(--live);">🟢 Aktualnie trwają zajęcia (${procent}%)</div>
+                    <div class="hero-title">${trwajace.summary}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted);">📍 ${trwajace.location || 'Brak sali'} • Koniec za: <b style="color:var(--live)">${formatujOdliczanie(trwajace.end - teraz)}</b></div>
+                `;
+            } else if (nastepne) {
+                hero.style.display = "flex";
+                hero.className = "hero-banner is-next";
+                hero.innerHTML = `
+                    <div class="hero-label" style="color: var(--next);">⏳ Kolejne zajęcia za:</div>
+                    <div class="hero-timer" style="color: var(--next);">${formatujOdliczanie(nastepne.start - teraz)}</div>
+                    <div class="hero-title">${nastepne.summary}</div>
+                    <div style="font-size: 0.85rem; color: var(--muted);">📍 ${nastepne.location || 'Brak sali'} • 🕒 ${nastepne.start.toLocaleDateString('pl-PL', {weekday: 'short', day: 'numeric', month: 'short'})} ${nastepne.start.toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})}</div>
+                `;
+            } else {
+                hero.style.display = "none";
             }
         }
 
@@ -282,7 +524,6 @@
             statusEl.textContent = "Pobieranie planu...";
 
             try {
-                // Pobiera plik plan.ics bezpośrednio z Twojego repozytorium (brak blokady CORS!)
                 const res = await fetch("./plan.ics?t=" + Date.now());
                 if (!res.ok) throw new Error("Brak pliku plan.ics");
                 const icsText = await res.text();
@@ -290,13 +531,14 @@
                 localStorage.setItem("usos_ics_cache", icsText);
                 localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
 
-                const zajecia = parsujICS(icsText);
-                wyswietlPlan(zajecia);
+                WSZYSTKIE_ZAJECIA = parsujICS(icsText);
+                wyswietlPlan();
                 statusEl.textContent = `✅ Zsynchronizowano: ${localStorage.getItem("usos_last_sync")}`;
             } catch (err) {
                 const cache = localStorage.getItem("usos_ics_cache");
                 if (cache) {
-                    wyswietlPlan(parsujICS(cache));
+                    WSZYSTKIE_ZAJECIA = parsujICS(cache);
+                    wyswietlPlan();
                     statusEl.textContent = `⚡ Tryb offline (zapisano: ${localStorage.getItem("usos_last_sync")})`;
                 } else {
                     statusEl.textContent = "⏳ Czekam na wygenerowanie pliku plan.ics w zakładce Actions...";
