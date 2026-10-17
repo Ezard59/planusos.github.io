@@ -32,6 +32,8 @@
             margin: 0 auto;
             user-select: none; /* Zapobiega przypadkowemu zaznaczaniu tekstu */
             overflow-x: hidden;
+            touch-action: pan-y; /* Blokuje przewijanie przeglądarki na boki, pozwala tylko góra-dół */
+            overscroll-behavior-x: none; /* Dodatkowa blokada efektu sprężyny na telefonach */
         }
         
         /* Pływające przyciski na bokach */
@@ -182,7 +184,7 @@
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 16px;
-            overflow: hidden; /* Żeby tytuł nie wystawał przy animacji */
+            overflow: hidden;
         }
         .month-title {
             font-size: 1.2rem;
@@ -595,40 +597,32 @@
             const planContainer = document.getElementById("plan-container");
             const titleEl = document.getElementById("current-month-title");
 
-            // Określamy klasy na podstawie kierunku przesuwania
             const outClass = kierunek > 0 ? "slide-out-next" : "slide-out-prev";
             const inClass = kierunek > 0 ? "slide-in-next" : "slide-in-prev";
 
-            // Rozpoczynamy animację wyjścia
             planContainer.classList.add(outClass);
             titleEl.classList.add(outClass);
 
-            // Czekamy aż stary zawartość zniknie
             setTimeout(() => {
-                // Zmieniamy indeks po wygaśnięciu animacji out
                 aktualnyIndeksMiesiaca += kierunek;
                 if (aktualnyIndeksMiesiaca < 0) aktualnyIndeksMiesiaca = dostepneMiesiace.length - 1;
                 if (aktualnyIndeksMiesiaca >= dostepneMiesiace.length) aktualnyIndeksMiesiaca = 0;
                 
-                // Renderujemy nowy plan na nowo
                 wyswietlPlan();
 
-                // Zdejmujemy starą klasę, przygotowujemy do wejścia
                 planContainer.classList.remove(outClass);
                 titleEl.classList.remove(outClass);
                 
-                // Uruchamiamy animację wejścia
                 planContainer.classList.add(inClass);
                 titleEl.classList.add(inClass);
 
-                // Usuwamy klasę in i zdejmujemy blokadę po zakończeniu
                 setTimeout(() => {
                     planContainer.classList.remove(inClass);
                     titleEl.classList.remove(inClass);
                     isAnimating = false;
                 }, 200);
 
-            }, 200); // 200ms zgrywa się z regułami CSS
+            }, 200);
         }
 
         function czyTenSamDzien(d1, d2) {
@@ -813,11 +807,12 @@
         /* ----- ZAAWANSOWANA OBSŁUGA PRZESUWANIA (SWIPE I MYSZKA) ----- */
         let startX = 0, startY = 0, endX = 0, endY = 0;
         let isMouseDown = false;
-        const appScreen = document.getElementById("app-screen");
 
         function handleGesture() {
             const xDiff = endX - startX;
             const yDiff = endY - startY;
+            
+            // Sprawdzamy czy ruch był wystarczająco poziomy i długi
             if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 50) {
                 if (xDiff < 0) zmienMiesiac(1); // Swipe w lewo (następny)
                 else zmienMiesiac(-1); // Swipe w prawo (poprzedni)
@@ -825,34 +820,32 @@
         }
 
         // Obsługa dotyku (telefony)
-        appScreen.addEventListener('touchstart', e => {
+        document.addEventListener('touchstart', e => {
             startX = e.changedTouches[0].clientX;
             startY = e.changedTouches[0].clientY;
         }, { passive: true });
 
-        appScreen.addEventListener('touchend', e => {
+        document.addEventListener('touchend', e => {
             endX = e.changedTouches[0].clientX;
             endY = e.changedTouches[0].clientY;
             handleGesture();
         }, { passive: true });
 
-        // Obsługa myszki (komputery)
-        appScreen.addEventListener('mousedown', e => {
+        // Obsługa myszki (komputery) - Nasłuch na cały dokument
+        document.addEventListener('mousedown', e => {
+            // Ignoruj kliknięcia w przyciski i inputy, żeby dało się ich używać
+            if (e.target.closest('button') || e.target.tagName === 'INPUT') return; 
             isMouseDown = true;
             startX = e.clientX;
             startY = e.clientY;
         });
 
-        appScreen.addEventListener('mouseup', e => {
+        document.addEventListener('mouseup', e => {
             if (!isMouseDown) return;
             isMouseDown = false;
             endX = e.clientX;
             endY = e.clientY;
             handleGesture();
-        });
-
-        appScreen.addEventListener('mouseleave', e => {
-            isMouseDown = false;
         });
 
         window.addEventListener("DOMContentLoaded", () => {
