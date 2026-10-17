@@ -30,34 +30,34 @@
             padding: 16px;
             max-width: 800px;
             margin: 0 auto;
-            user-select: none; /* Zapobiega przypadkowemu zaznaczaniu tekstu podczas swipe'owania */
+            user-select: none; /* Zapobiega przypadkowemu zaznaczaniu tekstu */
             overflow-x: hidden;
         }
         
-        /* Pływające, "jebitnie wielkie" przyciski na bokach */
+        /* Pływające przyciski na bokach */
         .side-nav {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
-            width: clamp(60px, 8vw, 100px); /* Dynamiczna, duża szerokość */
-            height: 40vh; /* Zajmują 40% wysokości ekranu */
+            width: clamp(60px, 8vw, 100px);
+            height: 40vh;
             background: rgba(30, 41, 59, 0.4);
             border: 2px solid var(--border);
             color: var(--accent);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem; /* Ogromna strzałka */
+            font-size: 3.5rem;
             cursor: pointer;
             z-index: 1000;
-            backdrop-filter: blur(10px); /* Mocniejsze rozmycie tła */
+            backdrop-filter: blur(10px);
             opacity: 0.6;
             transition: all 0.2s ease-in-out;
         }
         .side-nav:hover, .side-nav:active {
             opacity: 1;
             background: rgba(56, 189, 248, 0.2);
-            width: clamp(75px, 10vw, 120px); /* Powiększają się po najechaniu */
+            width: clamp(75px, 10vw, 120px);
         }
         .side-nav.left {
             left: 0;
@@ -68,6 +68,13 @@
             right: 0;
             border-right: none;
             border-radius: 24px 0 0 24px;
+        }
+
+        /* Ukryj przyciski nawigacji bocznej na urządzeniach mobilnych */
+        @media (max-width: 768px) {
+            .side-nav {
+                display: none !important;
+            }
         }
 
         #login-screen {
@@ -140,7 +147,6 @@
             margin-bottom: 14px;
         }
 
-        /* Pasek nawigacji - czysty, wyśrodkowany */
         .month-nav {
             display: flex;
             justify-content: center;
@@ -158,7 +164,6 @@
             text-transform: capitalize;
         }
 
-        /* Legenda typów zajęć */
         .legend {
             display: flex;
             gap: 12px;
@@ -178,7 +183,6 @@
             border-radius: 50%;
         }
 
-        /* Baner odliczania na górze */
         .hero-banner {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border: 1px solid var(--border);
@@ -205,7 +209,6 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Dni i kafelki */
         .day-group {
             margin-bottom: 20px;
             padding: 4px;
@@ -241,7 +244,6 @@
         .badge-live { background: var(--live); color: #052e16; animation: pulse 2s infinite; }
         .badge-next { background: var(--next); color: #422006; }
 
-        /* Plakietki typu zajęć */
         .type-badge {
             font-size: 0.72rem;
             padding: 2px 8px;
@@ -350,7 +352,6 @@
             font-weight: 500;
         }
 
-        /* Pasek postępu */
         .progress-wrap {
             margin-top: 4px;
             display: flex;
@@ -394,7 +395,7 @@
 
     <div id="app-screen">
         
-        <!-- Pływające przyciski nawigacyjne po bokach -->
+        <!-- Pływające przyciski nawigacyjne po bokach (ukryte na mobilkach) -->
         <div class="side-nav left" onclick="zmienMiesiac(-1)">◀</div>
         <div class="side-nav right" onclick="zmienMiesiac(1)">▶</div>
 
@@ -752,40 +753,36 @@
         function handleGesture() {
             const xDiff = endX - startX;
             const yDiff = endY - startY;
-            // Sprawdzamy, czy ruch był bardziej w poziomie niż w pionie i czy był wystarczająco długi (> 50px)
             if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 50) {
-                if (xDiff < 0) {
-                    zmienMiesiac(1); // Swipe w lewo (następny)
-                } else {
-                    zmienMiesiac(-1); // Swipe w prawo (poprzedni)
-                }
+                if (xDiff < 0) zmienMiesiac(1); // Swipe w lewo (następny)
+                else zmienMiesiac(-1); // Swipe w prawo (poprzedni)
             }
         }
 
         // Obsługa dotyku (telefony)
         appScreen.addEventListener('touchstart', e => {
-            startX = e.changedTouches[0].screenX;
-            startY = e.changedTouches[0].screenY;
+            startX = e.changedTouches[0].clientX;
+            startY = e.changedTouches[0].clientY;
         }, { passive: true });
 
         appScreen.addEventListener('touchend', e => {
-            endX = e.changedTouches[0].screenX;
-            endY = e.changedTouches[0].screenY;
+            endX = e.changedTouches[0].clientX;
+            endY = e.changedTouches[0].clientY;
             handleGesture();
         }, { passive: true });
 
-        // Obsługa myszki (komputery)
+        // Obsługa myszki (komputery) - teraz powinno działać pewniej
         appScreen.addEventListener('mousedown', e => {
             isMouseDown = true;
-            startX = e.screenX;
-            startY = e.screenY;
+            startX = e.clientX;
+            startY = e.clientY;
         });
 
         appScreen.addEventListener('mouseup', e => {
             if (!isMouseDown) return;
             isMouseDown = false;
-            endX = e.screenX;
-            endY = e.screenY;
+            endX = e.clientX;
+            endY = e.clientY;
             handleGesture();
         });
 
