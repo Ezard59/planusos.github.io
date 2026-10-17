@@ -158,38 +158,24 @@
     </div>
 
     <script>
-        // Zaszyfrowane bajty Twojego linku
-        const ENCRYPTED_BYTES = [
-            4,27,24,65,65,9,67,67,25,2,83,95,83,82,30,68,26,3,74,6,87,65,24,78,24,65,30,77,15,29,76,86,
-            23,30,83,76,25,65,78,76,20,83,83,29,14,12,18,0,28,3,67,27,24,72,21,82,25,12,14,91,82,2,10,
-            27,31,15,25,1,69,8,125,87,74,90,94,30,72,38,113,1,42,41,89,1,24,43,38,125,38,10,98,53
-        ];
-        const STORAGE_AUTH_KEY = "usos_saved_pass_v2";
-        let AKTYWNY_URL = "";
+        const STORAGE_AUTH_KEY = "usos_logged_in_v3";
+        
+        // Twój link zakodowany w Base64
+        const B64_URL = "aHR0cHM6Ly91c29zYXBwcy52aXN0dWxhLmVkdS5wbC9zZXJ2aWNlcy90dC91cGNvbWluZ19pY2FsP2xhbmc9cGwmdXNlcl9pZD0yOTQyNDEma2V5PVBMajZSVHVZTk5WV0V3dHFFeWJG";
 
-        function odszyfrujUrl(haslo) {
-            if (!haslo) return null;
-            // Usuwamy przypadkowe spacje i zamieniamy pierwszą literę na małą (gdyby klawiatura w telefonie zmieniła na "Lol123")
-            const czysteHaslo = haslo.trim().toLowerCase();
-            let wynik = "";
-            for (let i = 0; i < ENCRYPTED_BYTES.length; i++) {
-                wynik += String.fromCharCode(ENCRYPTED_BYTES[i] ^ czysteHaslo.charCodeAt(i % czysteHaslo.length));
-            }
-            if (wynik.startsWith("https://usosapps.vistula.edu.pl/")) {
-                return wynik;
-            }
-            return null;
+        function sprawdzHaslo(wpisane) {
+            if (!wpisane) return false;
+            return wpisane.trim().toLowerCase() === "lol123";
         }
 
         function zaloguj() {
             const input = document.getElementById("pass-input").value;
             const errorEl = document.getElementById("login-error");
-            const url = odszyfrujUrl(input);
 
-            if (url) {
+            if (sprawdzHaslo(input)) {
                 errorEl.style.display = "none";
-                localStorage.setItem(STORAGE_AUTH_KEY, input.trim().toLowerCase());
-                uruchomAplikacje(url);
+                localStorage.setItem(STORAGE_AUTH_KEY, "true");
+                uruchomAplikacje();
             } else {
                 errorEl.style.display = "block";
             }
@@ -202,8 +188,7 @@
             document.getElementById("login-screen").style.display = "flex";
         }
 
-        function uruchomAplikacje(odszyfrowanyUrl) {
-            AKTYWNY_URL = odszyfrowanyUrl;
+        function uruchomAplikacje() {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("app-screen").style.display = "block";
 
@@ -300,11 +285,11 @@
             }
         }
 
-        // Pobieranie z obsługą zapasowego proxy na wypadek awarii pierwszego
         async function pobierzZProxy(url) {
             const proxies = [
+                "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
                 "https://corsproxy.io/?" + encodeURIComponent(url),
-                "https://api.allorigins.win/raw?url=" + encodeURIComponent(url)
+                "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url)
             ];
             for (const p of proxies) {
                 try {
@@ -323,7 +308,8 @@
             statusEl.textContent = "Pobieranie najnowszego planu z USOS...";
 
             try {
-                const icsText = await pobierzZProxy(AKTYWNY_URL);
+                const usosUrl = atob(B64_URL);
+                const icsText = await pobierzZProxy(usosUrl);
                 
                 localStorage.setItem("usos_ics_cache", icsText);
                 localStorage.setItem("usos_last_sync", new Date().toLocaleString('pl-PL'));
@@ -343,12 +329,8 @@
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            const zapisaneHaslo = localStorage.getItem(STORAGE_AUTH_KEY);
-            if (zapisaneHaslo) {
-                const url = odszyfrujUrl(zapisaneHaslo);
-                if (url) {
-                    uruchomAplikacje(url);
-                }
+            if (localStorage.getItem(STORAGE_AUTH_KEY) === "true") {
+                uruchomAplikacje();
             }
         });
     </script>
